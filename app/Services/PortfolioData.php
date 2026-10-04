@@ -71,6 +71,7 @@ class PortfolioData
     {
         return ['id' => (string) $a->id, 'slug' => $a->translated('slug'), 'slugs' => $a->slug, 'title' => $a->title,
             'description' => $a->summary, 'body' => $a->description, 'type' => ['fr' => $a->type, 'en' => $a->type], 'role' => $a->role, 'location' => $a->location,
+            'html' => ['fr' => $this->markdown($a->description['fr'] ?? ''), 'en' => $this->markdown($a->description['en'] ?? '')],
             'date' => $a->event_date?->toDateString(), 'externalUrl' => $a->external_url, 'status' => $a->status,
             'media' => $a->media->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt])->all()];
     }

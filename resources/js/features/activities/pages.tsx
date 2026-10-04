@@ -114,7 +114,10 @@ export function ActivityPage({
             </header>
             <section className="article-body prose">
                 <h2>{t("features_activities_pages_08")}</h2>
-                {a.body && <p>{a.body[locale]}</p>}
+                <div
+                    className="prose"
+                    dangerouslySetInnerHTML={{ __html: a.html?.[locale] ?? "" }}
+                />
                 <EditorialMedia
                     images={(a.media ?? []).map((m) => ({
                         src: m.src,

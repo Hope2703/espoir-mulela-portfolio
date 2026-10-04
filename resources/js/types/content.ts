@@ -80,6 +80,7 @@ export type Activity = {
     description: Localized;
     role: Localized;
     body?: Localized;
+    html: Localized;
     media?: { src: string; alt: Localized }[];
     externalUrl?: string;
     date: string | null;

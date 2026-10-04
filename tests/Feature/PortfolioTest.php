@@ -244,6 +244,42 @@ class PortfolioTest extends TestCase
         $this->post('/admin/media', ['owner_type' => 'project', 'owner_id' => 1, 'type' => 'desktop', 'sort_order' => 0, 'alt' => ['fr' => 'Test', 'en' => 'Test'], 'file' => UploadedFile::fake()->create('payload.svg', 2, 'image/svg+xml')])->assertSessionHasErrors('file');
     }
 
+    public function test_activity_description_renders_safe_markdown_in_both_languages_and_preserves_source(): void
+    {
+        $description = [];
+        foreach (['fr' => 'Solutions', 'en' => 'Solutions EN'] as $locale => $title) {
+            $description[$locale] = "## {$title}\n\nPremier paragraphe.\n\nDeuxième paragraphe avec `code`.\n\n### Détails\n\n- Python\n- Machine Learning\n\n[Lien](https://example.com)\n\n[Dangereux](javascript:alert(1))\n\n<span onclick=\"alert(1)\">HTML brut</span>\n\n<script>alert(1)</script>";
+        }
+        $activity = Activity::create(array_replace($this->payload('activities'), ['description' => $description, 'status' => 'published', 'published_at' => now()->subDay()]));
+        foreach (['fr' => '/activites/test-fr', 'en' => '/en/activities/test-en'] as $locale => $url) {
+            $html = app(PortfolioData::class)->activity($activity)['html'][$locale];
+            foreach (['<h2>', '<h3>', '<ul>', '<li>Python</li>', '<li>Machine Learning</li>', '<p>Premier paragraphe.</p>', '<p>Deuxième paragraphe', '<code>code</code>', 'href="https://example.com"'] as $fragment) {
+                $this->assertStringContainsString($fragment, $html);
+            }
+            foreach (['<script', '<span', 'onclick=', 'javascript:'] as $fragment) {
+                $this->assertStringNotContainsString($fragment, $html);
+            }
+            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->where('locale', $locale)->where('activity.html.'.$locale, $html));
+        }
+        $storedDescription = $activity->fresh()->description;
+        foreach (['fr', 'en'] as $locale) {
+            $this->assertSame($description[$locale], $storedDescription[$locale]);
+        }
+    }
+
+    public function test_activity_without_description_and_publication_markdown_remain_functional(): void
+    {
+        $activity = Activity::create(array_replace($this->payload('activities'), ['description' => null, 'status' => 'published', 'published_at' => now()->subDay()]));
+        foreach (['/activites/test-fr', '/en/activities/test-en'] as $url) {
+            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->where('activity.html.fr', '')->where('activity.html.en', ''));
+        }
+        $publication = Publication::create(array_replace($this->payload('publications'), ['body' => ['fr' => "## Publication FR\n\n- Élément", 'en' => "## Publication EN\n\n- Item"], 'status' => 'published', 'published_at' => now()->subDay()]));
+        foreach (['fr' => '/publications/test-fr', 'en' => '/en/publications/test-en'] as $locale => $url) {
+            $html = app(PortfolioData::class)->markdown($publication->body[$locale]);
+            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->where('publication.html', $html));
+        }
+    }
+
     public function test_markdown_strips_html_and_unsafe_links(): void
     {
         $html = app(PortfolioData::class)->markdown('<script>alert(1)</script>\n[click](javascript:alert(1))\n# Title');
