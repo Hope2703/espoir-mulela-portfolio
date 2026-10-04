@@ -1,0 +1,16 @@
+node_modules/
+.cache/
+.next/
+out/
+*.tsbuildinfo
+.env*
+!.env.example
+artifacts/
+coverage/
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vercel/
