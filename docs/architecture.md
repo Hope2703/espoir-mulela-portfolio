@@ -60,6 +60,8 @@ La migration 2026_10_04_210000_simplify_portfolio_content transforme les ancienn
 
 L’accueil utilise les projets featured, une formation (priorité current puis ordre) et deux expériences (même priorité) comme résumé, puis les derniers contenus publiés et non futurs. Aucun réglage manuel de sections d’accueil : hero_title est une composition de code dérivée du titre professionnel, navigationName et localisation courte dérivent de l’identité, journeyNotes est une projection du parcours. À propos affiche uniquement les compétences visibles. Les descriptions de projets et publications passent par le même Markdown assaini ; la durée de lecture des publications est calculée.
 
+Les couvertures de publications et galeries d’activités utilisent components/media/editorial-media.tsx et le composant Image existant. Le conteneur est centré, limité à 1050 px (largeur des en-têtes éditoriaux) et à la largeur disponible ; chaque image conserve sa taille naturelle ou se réduit proportionnellement, sans agrandissement. La galerie est verticale, centrée et espacée de façon responsive. Les images Markdown des articles suivent les mêmes règles de dimensionnement et de centrage, avec des styles limités aux pages éditoriales.
+
 ## Migration vérifiée
 
 L’audit a exporté directement les données de l’ancien profil et du catalogue dans database/seeders/data/portfolio.json. Les tests comparent textes réunis dans les descriptions, noms et médias avec cette source. tests/fixtures/parity.json conserve les SHA-256 des treize médias originaux. Les captures comparatives et rapports restent dans artifacts/, ignoré par Git.

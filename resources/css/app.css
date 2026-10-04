@@ -1195,6 +1195,26 @@ p + p {
     width: min(760px, calc(100% - 48px));
     margin: 60px auto 100px;
 }
+.editorial-media {
+    display: grid;
+    justify-items: center;
+    width: 100%;
+    max-width: 1050px;
+    min-width: 0;
+    gap: clamp(24px, 4vw, 40px);
+    margin: clamp(24px, 4vw, 48px) auto;
+}
+.editorial-media img,
+.article-body .prose img {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    margin-inline: auto;
+}
+.article-body .prose img {
+    margin-block: clamp(24px, 4vw, 48px);
+}
 .prose {
     font-size: 19px;
     line-height: 1.85;

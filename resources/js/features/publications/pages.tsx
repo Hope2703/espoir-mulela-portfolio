@@ -7,6 +7,7 @@ import { href } from "@/lib/routes";
 import { PageHeading, ContactBand } from "@/components/ui/common";
 import { Empty } from "@/components/ui/empty-state";
 import { EntryPanel } from "@/components/ui/entry-panel";
+import { EditorialMedia } from "@/components/media/editorial-media";
 export function Publications({ locale }: { locale: Locale }) {
     const t = useTranslations();
     const { publications } = usePortfolio();
@@ -86,7 +87,10 @@ export function PublicationPage({
             </header>
             {p.cover && (
                 <div className="wrap article-cover">
-                    <img src={p.cover} alt={p.title} loading="eager" />
+                    <EditorialMedia
+                        images={[{ src: p.cover, alt: p.title }]}
+                        priority
+                    />
                 </div>
             )}
             <article className="article-body">

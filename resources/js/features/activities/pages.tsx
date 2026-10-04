@@ -7,6 +7,7 @@ import { href } from "@/lib/routes";
 import { PageHeading, ContactBand } from "@/components/ui/common";
 import { Empty } from "@/components/ui/empty-state";
 import { EntryPanel } from "@/components/ui/entry-panel";
+import { EditorialMedia } from "@/components/media/editorial-media";
 export function Activities({ locale }: { locale: Locale }) {
     const t = useTranslations();
     const { activities } = usePortfolio();
@@ -114,14 +115,12 @@ export function ActivityPage({
             <section className="article-body prose">
                 <h2>{t("features_activities_pages_08")}</h2>
                 {a.body && <p>{a.body[locale]}</p>}
-                {a.media?.map((m) => (
-                    <img
-                        key={m.src}
-                        src={m.src}
-                        alt={m.alt[locale]}
-                        loading="lazy"
-                    />
-                ))}
+                <EditorialMedia
+                    images={(a.media ?? []).map((m) => ({
+                        src: m.src,
+                        alt: m.alt[locale],
+                    }))}
+                />
                 {a.externalUrl && (
                     <a
                         className="text-link"
