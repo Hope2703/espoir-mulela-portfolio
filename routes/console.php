@@ -23,7 +23,7 @@ Artisan::command('admin:create', function () {
             }
         }
 
-return 1;
+        return 1;
     }
     $this->info('Administrateur créé.');
 
