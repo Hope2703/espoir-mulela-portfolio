@@ -1,128 +1,37 @@
-# Gestion du contenu
+# Contenu et administration
 
-Les exemples ci-dessous décrivent la structure ; ils ne sont pas des expériences à publier. Ne saisir que des faits confirmés. Tous les chemins sont relatifs à la racine.
+## Source réelle migrée
 
-## Ajouter un projet
+Neuf projets : CulinaPOS, WhatsApp Sender / Whasend, MaliyaFlow, FOMIN (slug projet-institutionnel), Axum, Libiki Lya Kongo, Esikanayo, AgriculturePourTous et THE AGENCY DRC. Quatre expériences, trois formations, deux certifications et quatre catégories de compétences sont reprises du profil initial, avec leurs traductions et outils réels. Activités et publications restent vides.
 
-Modifier `src/content/projects/index.ts`. Ajouter un objet `Project` à `projects`. Les champs obligatoires sont `id`, `slug`, `title`, `shortDescription`, `description`, `context`, `category`, `technologies`, `media`, `links`, `featured`, `confidential`, `sections`. `role` et `status` sont facultatifs.
+THE AGENCY DRC utilise le slug commun the-agency-drc et deux captures réelles de l’accueil et de la recherche de biens sur https://theagency.axumindustries.com/. L’association à Axum est confirmée par le propriétaire. La fiche décrit uniquement les contrôles publics observés : aucun rôle personnel, technologie, volume commercial ou fonctionnalité privée n’est inventé. Les résultats immobiliers étaient vides lors de l’inspection.
 
-```ts
-const project: Project = {
-  id: "nom-du-projet",
-  slug: "nom-du-projet",
-  title: { fr: "Nom officiel", en: "Official name" },
-  shortDescription: { fr: "Résumé vérifié.", en: "Verified summary." },
-  description: { fr: "Contribution vérifiée.", en: "Verified contribution." },
-  context: { fr: "Contexte vérifié.", en: "Verified context." },
-  category: "Web",
-  technologies: [],
-  media: [],
-  links: [],
-  featured: false,
-  confidential: false,
-  sections: [],
-};
-```
+Le portrait et douze captures actives sont copiés sans transformation dans storage/app/public/images. Les treize fichiers d’origine dans public/images sont conservés, dont la capture FOMIN déjà neutralisée et validée : son empreinte est vérifiée avant import et son marqueur public_safe permet de conserver sa composition initiale sans ouvrir la diffusion de nouveaux médias confidentiels. Les tests vérifient chaque empreinte SHA-256. Deux images OpenGraph PNG FR/EN complètent ces assets.
 
-Catégories : `Web`, `Mobile`, `SaaS`, `Institutionnel`, `Automatisation`. Un slug contient des minuscules ASCII, chiffres et tirets, reste identique en FR/EN et doit être unique. Les pages sont générées automatiquement sous `/projets/[slug]` et `/en/projects/[slug]`. En cas de renommage, ajouter les redirections dans `next.config.ts`.
+FOMIN reste une contribution chez Taprinella Logistic avec une présentation neutre. Aucun accès, URL interne, IP, montant, identifiant ou détail confidentiel ne doit être enregistré pour diffusion. Le serveur bloque aussi l’association de captures à un projet confidentiel.
 
-`featured` alimente la sélection d’accueil ; conserver trois projets pour la composition actuelle. Les autres apparaissent dans « Aussi dans mon univers ». Ajouter uniquement les technologies attestées. Un lien officiel est `{ type: "official", url: "https://…" }` ; `enabled: false` empêche son affichage. Aucune URL interne ne doit même entrer dans le registre.
+## Modifier les contenus
 
-Les noms officiels sont **MaliyaFlow**, **Libiki Lya Kongo**, **FOMIN**. Pour FOMIN, attribuer la contribution au travail chez Taprinella Logistic, sans données métier, IP, accès, montants ou architecture confidentielle.
+Créer son administrateur avec php artisan admin:create ou, après configuration locale explicite de ADMIN_EMAIL/ADMIN_PASSWORD, php artisan db:seed --class=AdminUserSeeder, puis ouvrir /login et /admin. Les formulaires projets, activités et publications proposent Français/English, statut draft/published/archived, dates, slug, résumé et contenu ; ordre/SEO pour projets et publications. La langue d’interface est indépendante de l’onglet éditorial et préserve les saisies. /admin/profile gère nom, email et mot de passe ; le mot de passe actuel est requis pour une modification sensible. Les projets portent description Markdown, contexte/rôle optionnels, un lien public, mise en avant et confidentialité. Aucun champ technologies, catégorie, dépôt ou éditeur de sections. Les activités portent résumé, description optionnelle, type simple, rôle/lieu optionnels et date d’événement ; les publications utilisent du Markdown avec prévisualisation HTML assainie. Aucun MDX exécutable n’est accepté.
 
-## Ajouter une activité
+Enregistrer les deux traductions avant publication. Un contenu futur reste invisible jusqu’à sa date ; une archive ou suppression disparaît du public et du sitemap. Preview est privé. Les slugs de chaque langue doivent être uniques, y compris parmi les contenus supprimés, pour ne pas réattribuer accidentellement une ancienne adresse.
 
-Ajouter une entrée dans `src/content/activities/index.ts` (`activityEntries`). Le registre est volontairement vide. Contrat `Activity` dans `src/types/content.ts` :
+Le parcours et les compétences se modifient dans les modules dédiés. Une catégorie contenant des compétences ne peut pas être supprimée avant réaffectation ou suppression de ses enfants. Les paramètres administrent seulement nom complet, titre professionnel FR/EN, bio FR/EN, localisation FR/EN, SEO FR/EN, email et WhatsApp. L’accueil compose automatiquement le résumé à partir du parcours ; sa mise en page reste dans le code. Les compétences ont catégorie, nom, ordre et visibilité. Les données éditoriales ne doivent pas être recopiées dans les composants React.
 
-```ts
-const activity: Activity = {
-  id: "evenement-confirme",
-  slug: "evenement-confirme",
-  title: { fr: "Titre confirmé", en: "Confirmed title" },
-  type: { fr: "Intervention", en: "Talk" },
-  description: { fr: "Description factuelle.", en: "Factual description." },
-  role: { fr: "Rôle réel", en: "Actual role" },
-  date: null,
-  location: { fr: "Lieu confirmé", en: "Confirmed location" },
-  status: "draft",
-};
-```
+## Médias
 
-`date` peut être une date ISO `YYYY-MM-DD` vérifiée ou `null`. Passer à `published` uniquement après validation. Les pages sont dans `src/features/activities/pages.tsx`. Il n’y a pas de champ image d’activité actuellement ; `public/images/activities/` est l’emplacement prévu si ce besoin est ajouté, pas une fonctionnalité à prétendre existante.
+Depuis chaque fiche enregistrée, Gérer les médias associe JPEG/PNG/WebP à un projet, une activité, une couverture de publication ou au portrait. Maximum 8 Mo, dimensions comprises entre 100 et 6000 pixels ; SVG et formats non autorisés sont refusés. Renseigner les textes alternatifs FR/EN, ordre et type cover/desktop/mobile/other. La photographie est accessible depuis Paramètres. Les noms sont générés côté serveur. La suppression d’un média de contenu publié est bloquée : remettre le contenu en brouillon avant cette opération. Les fichiers référencés ailleurs sont préservés.
 
-## Ajouter une publication
+MaliyaFlow conserve ses captures sans légende. Les pages utilisent la couverture puis les captures en fonction de la composition existante ; pas de contenu factice pour remplir les états vides.
 
-1. Écrire les fichiers locaux `src/content/publications/mon-sujet.fr.mdx` et `mon-sujet.en.mdx`.
-2. Ajouter deux entrées `Publication` dans `src/content/publications/index.ts`, de même slug, une par `langue`.
-3. Renseigner des dates et durées de lecture réelles ; commencer par `draft`.
+## Réseaux, messages et paramètres
 
-```ts
-const publication: Publication = {
-  title: "Titre validé",
-  slug: "mon-sujet",
-  description: "Résumé validé.",
-  date: null,
-  tags: ["Développement"],
-  langue: "fr",
-  readingTime: 4,
-  status: "draft",
-  file: "mon-sujet.fr.mdx",
-};
-```
+Les adresses WhatsApp, LinkedIn et email sont les données réelles déjà présentes. Réseaux possède uniquement plateforme, URL, actif et ordre ; le libellé public est dérivé de l’adresse email/WhatsApp ou de la plateforme. Instagram est désactivé et vide ; l’activer seulement avec l’adresse réelle. Chaque plateforme valide sa forme d’URL. Les paramètres email/WhatsApp mettent également à jour leurs liens sociaux.
 
-Le contrat est dans `src/types/content.ts`. `cover` est facultatif : URL locale d’une image réelle pour le JSON-LD, par exemple `/images/publications/mon-sujet.webp`. La mise en page actuelle ne rend pas de couverture visible. Le MDX accepte titres, paragraphes, listes, liens et code ; ne pas répéter le H1 de la page dans le corps. Aucun frontmatter n’est traité : les métadonnées vivent dans le registre TypeScript. Seul du MDX de confiance est compilé côté serveur par `src/features/publications/mdx.tsx`.
+Les messages peuvent être lus, marqués lus/non lus, archivés/restaurés et supprimés logiquement. Aucun envoi de réponse automatique n’est effectué depuis le dashboard. Les statistiques reflètent seulement les visites enregistrées.
 
-Publier les deux langues ensemble : le switch de langue et le SEO emploient le même slug. `published` ajoute automatiquement les liens et routes ; Article JSON-LD est alors émis. Sans publication, la page conserve son état vide.
+## Seeders et données manquantes
 
-## Modifier mon parcours
+php artisan db:seed importe les données initiales de façon idempotente sans remplacer les éditions ni ressusciter un projet supprimé. Aucun administrateur, activité, publication, métrique ou client de démonstration n’est créé.
 
-`src/data/profile.ts` : `profile` pour l’introduction et la photo, `education` pour la formation, `certifications` pour les certifications, `journeyNotes` pour le résumé d’accueil. Garder ces notes cohérentes avec les données détaillées. Le hero se compose dans `src/features/profile/home.tsx` ; ses animations sont dans `src/styles/site.css`.
-
-## Modifier mes expériences
-
-Éditer `experiences` dans `src/data/profile.ts`. Chaque `Experience` contient `organization`, `role`, `description`, `contributions` et éventuellement `period`. Les trois champs textuels de présentation sont bilingues, `contributions` étant un tableau de textes bilingues. Ne pas ajouter une période non confirmée.
-
-## Modifier mes compétences
-
-Éditer `skills` dans le même fichier : `title`, `description`, `tools`. Les noms de technologies restent identiques entre langues. La convention existante `Français / English` dans `tools` permet de traduire les libellés génériques.
-
-## Modifier mes informations de contact
-
-`profile.socials` dans `src/data/profile.ts` contient les liens publics. `NEXT_PUBLIC_WHATSAPP_NUMBER` remplace le numéro WhatsApp (chiffres et indicatif international) ; vide, il conserve le numéro confirmé existant. L’adresse email publique se modifie dans `profile.socials`, indépendamment du destinataire serveur `CONTACT_EMAIL`. Les réglages Resend sont détaillés dans [deployment.md](deployment.md).
-
-## Ajouter une image
-
-Utiliser `public/images/projects/{slug}/nom-lisible.webp` ou un JPEG/PNG adapté, et `public/images/profile/` pour le portrait. Ne pas conserver les exports intermédiaires. Dans le projet :
-
-```ts
-media: [
-  {
-    src: "/images/projects/nom-du-projet/tableau-de-bord.webp",
-    alt: {
-      fr: "Description utile de l’écran",
-      en: "Useful screen description",
-    },
-    kind: "screenshot",
-    width: 1280,
-    height: 720,
-  },
-];
-```
-
-Donner les dimensions réelles, sans déformer l’image. L’alt décrit l’écran sans annoncer une retouche. La galerie MaliyaFlow utilise ses cinq images dans l’ordre accueil, tâches, croissance, performances, connexion. Aucune légende visible ne doit revenir sous ses captures. Pour le portrait, `profile.portrait = null` active les initiales.
-
-## Ajouter une traduction
-
-Chaque objet `Localized` contient `fr` et `en`. Les libellés de navigation sont dans `src/lib/routes.ts`, les textes d’interface dans leur fonctionnalité, et les messages de validation dans `src/features/contact/form.tsx`. Éviter d’introduire un deuxième système de dictionnaires.
-
-## Vérifier après modification
-
-```sh
-npm run typecheck
-npm run lint
-npm test
-npm run build
-npm run start -- --port 3002
-```
-
-Dans un autre terminal : `npm run check:site -- http://127.0.0.1:3002`. Le script lit automatiquement les slugs et médias du catalogue de projets. Les contrôles navigateur sont décrits dans [deployment.md](deployment.md). Relire FR/EN et vérifier les images, noms officiels et informations confidentielles.
+À configurer pour la production : domaine canonique espoir.axumindustries.com, accès VPS et PostgreSQL, compte admin personnel, destinataire des notifications, fournisseur SMTP et expéditeur vérifié. The Agency utilise actuellement https://theagency.axumindustries.com/ ; aucune mention de domaine temporaire ou disclaimer public. À confirmer : URL Instagram et futurs contenus réels. Le seed ne transforme pas une donnée absente en fait inventé.

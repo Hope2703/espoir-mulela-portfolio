@@ -1,0 +1,20 @@
+<?php
+
+return ['name' => 'Nom',
+    'email' => 'Email',
+    'subject' => 'Sujet',
+    'message' => 'Message',
+    'choose' => 'Choisir un sujet',
+    'send' => 'Envoyer le message',
+    'sending' => 'Envoi en cours…',
+    'success' => 'Votre message a bien été envoyé. Merci pour votre prise de contact.',
+    'error' => 'Le message n’a pas pu être envoyé. Réessayez ou contactez-moi directement par email.',
+    'unconfigured' => 'L’envoi est indisponible pour le moment. Votre texte reste dans le formulaire. Vous pouvez me contacter par WhatsApp ou par email.',
+    'limited' => 'Trop de tentatives rapprochées. Réessayez plus tard ou utilisez le contact direct.',
+    'invalid' => 'Vérifiez les champs indiqués.',
+    'names' => ['Opportunité professionnelle', 'Collaboration', 'Projet', 'Conseil', 'Partenariat', 'Événement', 'Autre'],
+    'fields' => ['name' => 'Indiquez un nom de 2 à 100 caractères.',
+        'email' => 'Indiquez une adresse email valide.',
+        'subject' => 'Choisissez un sujet.',
+        'message' => 'Votre message doit contenir entre 20 et 5 000 caractères.'],
+    'privacy' => 'Les informations saisies servent uniquement à répondre à votre demande. Elles ne sont pas publiées sur le site.'];

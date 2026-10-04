@@ -1,91 +1,154 @@
-# Mise en production
+# Lancement, vérification et VPS
 
-## Prérequis
+## Versions et prérequis
 
-Node.js 22.18+ ou 24 LTS, npm, un dépôt Git privé ou public et un compte Vercel. Ce dossier n’avait pas de dépôt `.git` lors de la passe du 4 octobre 2026 : créer le dépôt et le publier avant l’import Vercel. Aucune mise en ligne n’est effectuée par les scripts du projet.
+Laravel 13.34.0, PHP utilisé 8.4.5, Inertia Laravel 3.5.1, React 19, Vite 8, Tailwind 4, TypeScript 5.9.3 et Node utilisé 24.19.0. Les versions exactes sont verrouillées dans composer.lock et package-lock.json. Conserver l’override SWC 1.15.11 : il corrigeait un binding Windows de l’ancien projet ; Vite React n’en dépend pas directement.
 
-Le projet utilise Next.js 16.3.8 ; conserver `package-lock.json`. L’override `@swc/core: 1.15.11` évite une erreur de chargement du binding natif Windows observée avec la version résolue plus récente. Le réévaluer avec un build Windows et Linux avant suppression. ESLint 9 est conservé pour la compatibilité du plugin d’accessibilité ; ne pas appliquer une montée majeure forcée.
+Installer PHP 8.4 avec pdo_pgsql, mbstring, openssl, fileinfo, ctype, tokenizer, DOM/XML ; pdo_sqlite/sqlite3 pour les tests rapides. Composer 2, Node 22.18+ ou 24, PostgreSQL et npm sont nécessaires. PostgreSQL 18 a été utilisé pour la validation ; aucune base existante de l’utilisateur n’a été réinitialisée.
 
-## Variables d’environnement
-
-Copier `.env.example` dans `.env.local` pour les essais. Les secrets ne sont jamais préfixés `NEXT_PUBLIC_`.
-
-| Variable                      | Utilisation                                                                                                                                                                                     |
-| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_SITE_URL`        | Origine HTTPS canonique finale, sans slash final. Alimente metadataBase, canonical, hreflang, OG, sitemap et origine autorisée du formulaire. Vide en local : fallback `http://127.0.0.1:3000`. |
-| `NEXT_PUBLIC_WHATSAPP_NUMBER` | Numéro public avec indicatif. Vide : numéro confirmé dans `src/data/profile.ts`.                                                                                                                |
-| `SITE_INDEXABLE`              | `true` en production finale uniquement. `false` sur les previews ; bloque robots et vide le sitemap.                                                                                            |
-| `CONTACT_EMAIL`               | Adresse destinataire des messages.                                                                                                                                                              |
-| `CONTACT_FROM`                | Adresse expéditrice autorisée par le domaine Resend vérifié.                                                                                                                                    |
-| `RESEND_API_KEY`              | Clé serveur Resend.                                                                                                                                                                             |
-| `CONTACT_SECRET`              | Secret aléatoire stable partagé par toutes les instances, pour signer les jetons.                                                                                                               |
-| `CONTACT_TRUST_PROXY`         | `true` uniquement si l’hébergement garantit la réécriture de `X-Forwarded-For`. Sinon conserver `false`.                                                                                        |
-
-Générer le secret localement avec `node -e "console.log(require('node:crypto').randomBytes(32).toString('hex'))"`, puis le stocker dans les secrets Vercel, jamais dans Git. Reconstruire après une modification de l’URL, du numéro ou de l’indexation : le contenu est pré-généré et les variables publiques sont intégrées au build.
-
-## Build local
+## Installation locale
 
 ```sh
+composer install
+cp .env.example .env
+php artisan key:generate
+# Créer espoir_portfolio et un utilisateur PostgreSQL dédié ; configurer DB_*.
+php artisan migrate --seed
+php artisan storage:link
+php artisan admin:create
 npm install
-npm run lint
-npm run typecheck
-npm test
 npm run build
-npm run start -- --port 3002
+composer run dev
 ```
 
-Sans service email, le formulaire affiche une indisponibilité et garde le texte dans les champs. Pour tester le contrat API signé sans email réel, fournir seulement `CONTACT_SECRET`, puis lancer `node scripts/check-contact.mjs`. Ce script consomme le quota local ; redémarrer le serveur avant un autre test de formulaire. Ne jamais l’utiliser avec Resend actif.
+Sous Windows : Copy-Item .env.example .env ; activer pdo_pgsql dans php.ini. Le serveur utilise http://127.0.0.1:8000, /login et /admin. admin:create demande le nom, l’email et un mot de passe secret confirmé de douze caractères minimum. Aucun identifiant par défaut.
 
-Dans un second terminal :
+Alternative locale explicite : renseigner ADMIN_EMAIL et ADMIN_PASSWORD dans .env, puis `php artisan db:seed --class=AdminUserSeeder`. La configuration absente provoque une erreur claire ; un compte existant conserve son mot de passe et ses permissions. Le seed général ne crée aucun utilisateur. Le bootstrap et admin:create partagent AdminAccounts. Ne jamais versionner ces valeurs. Après bootstrap de production, retirer ADMIN_PASSWORD, reconstruire le cache de configuration et modifier le secret local initial via /admin/profile.
+
+Les essais de migration ont utilisé un cluster isolé ignoré .local/postgres, lié à 127.0.0.1:55432, et le chargement local .local/php/pgsql.ini. Ce dispositif est uniquement de QA ; configurer son propre PostgreSQL pour une installation durable. Dans cette session Windows, PHP_INI_SCAN_DIR doit viser .local/php si l’extension n’est pas activée dans php.ini.
+
+composer run dev lance PHP et Vite ; le plugin Inertia 3 fournit automatiquement le SSR en développement. Pour vérifier le build de production, arrêter Vite, supprimer public/hot s’il est resté après un arrêt forcé, puis utiliser deux terminaux :
 
 ```sh
-npm run check:site -- http://127.0.0.1:3002
-npx playwright install chromium
-node scripts/check-browser.mjs http://127.0.0.1:3002
+php artisan serve --host=127.0.0.1 --port=8000
+php artisan inertia:start-ssr
 ```
 
-Le navigateur peut aussi être Chrome déjà installé : définir `PLAYWRIGHT_CHANNEL=chrome` dans le terminal. Playwright est une dépendance de développement et n’est pas lancé pendant le build Vercel. Le script capture sept vues dans `artifacts/`, vérifie les sept largeurs de 375 à 1440 px, les thèmes et les interactions. `artifacts/` reste ignoré par Git ; aucun export de test ne part dans `public/`.
+## MailHog
 
-## Déploiement Vercel
+Lancer MailHog en local (binaire officiel ou conteneur) ; SMTP 127.0.0.1:1025, interface http://127.0.0.1:8025. Exemple binaire :
 
-Importer le dépôt, choisir le preset Next.js et Node.js 24, conserver `npm run build` et les réglages de sortie automatiques. Ajouter les variables dans l’environnement concerné, puis déployer. Ne pas configurer `output: "export"` : le formulaire et les images ont besoin du runtime Next.js. Pour une preview avec formulaire, `NEXT_PUBLIC_SITE_URL` doit correspondre à son origine, et `SITE_INDEXABLE` rester `false`. Voir les [environnements Vercel](https://vercel.com/docs/deployments/environments).
+```sh
+MailHog -smtp-bind-addr 127.0.0.1:1025 -ui-bind-addr 127.0.0.1:8025 -api-bind-addr 127.0.0.1:8025
+```
 
-## Configuration du domaine
+L’exemple .env configure déjà SMTP sans authentification : MAIL_MAILER=smtp, MAIL_HOST=127.0.0.1, MAIL_PORT=1025, MAIL_USERNAME/MAIL_PASSWORD vides, MAIL_SCHEME=null. Ajouter ADMIN_EMAIL pour une notification capturée par MailHog et CONTACT_SEND_CONFIRMATION=true pour l’accusé visiteur. Si Laravel est dans Docker, MAIL_HOST=mailhog convient seulement si ce nom désigne le service dans son réseau. Le dashboard conserve le message même si SMTP est indisponible. Les tests automatisés utilisent Mail::fake et Notification::fake ; les essais navigateur vérifient aussi notification, confirmation et reset dans MailHog, sans email réel. Les vues email partagent un layout Blade responsive en tables, styles inline, expéditeur, signature et CTA ; aucun composant React n’intervient dans leur rendu.
 
-Ajouter le domaine dans le projet Vercel et appliquer les enregistrements demandés par son tableau de bord. Choisir une URL canonique et rediriger ses variantes vers elle. Renseigner ensuite cette origine dans `NEXT_PUBLIC_SITE_URL` et redéployer. Procédure : [configuration du domaine Vercel](https://vercel.com/docs/domains/set-up-custom-domain).
+## Variables
 
-## Resend
+| Groupe | Variables et usage |
+| --- | --- |
+| Application | APP_NAME, APP_ENV, APP_KEY stable, APP_DEBUG, APP_URL canonique, APP_LOCALE=fr, APP_FALLBACK_LOCALE=fr |
+| PostgreSQL | DB_CONNECTION=pgsql, DB_HOST, DB_PORT, DB_DATABASE, DB_USERNAME, DB_PASSWORD |
+| Sessions/cache | SESSION_DRIVER=database, SESSION_LIFETIME, SESSION_ENCRYPT=true, SESSION_SECURE_COOKIE, CACHE_STORE=database |
+| Email | MAIL_MAILER=smtp, MAIL_SCHEME, MAIL_HOST, MAIL_PORT, MAIL_USERNAME, MAIL_PASSWORD, MAIL_FROM_ADDRESS, MAIL_FROM_NAME, ADMIN_EMAIL |
+| Exécution | QUEUE_CONNECTION=sync, LOG_CHANNEL, LOG_LEVEL, INERTIA_SSR_ENABLED=true, INERTIA_SSR_URL=http://127.0.0.1:13714 |
+| Frontend/SEO | VITE_APP_NAME, SITE_INDEXABLE=false pour local/previews, true seulement sur domaine final |
 
-Vérifier un domaine d’envoi, créer une clé API adaptée et renseigner les quatre variables `RESEND_API_KEY`, `CONTACT_FROM`, `CONTACT_EMAIL`, `CONTACT_SECRET`. L’adresse du visiteur devient `reply_to`, jamais l’expéditeur. L’implémentation emploie directement l’[API Send Email](https://resend.com/docs/api-reference/emails/send-email), sans SDK supplémentaire.
+Les secrets restent dans .env, jamais dans Git ni dans une variable VITE_*. L’email public et le numéro WhatsApp sont administrés en base ; ADMIN_EMAIL sert au destinataire des notifications et au bootstrap explicitement demandé. ADMIN_PASSWORD ne sert qu’au bootstrap.
 
-## DNS
+## Contrôles
 
-Utiliser les valeurs actuelles affichées par Vercel pour le site et par Resend pour l’authentification de l’expéditeur. Conserver les enregistrements email existants du domaine. Resend vérifie notamment SPF et DKIM ; attendre la confirmation de vérification avant l’envoi réel. Voir [domaines vérifiés Resend](https://resend.com/docs/dashboard/domains/introduction). Ne pas copier une IP ou un enregistrement DNS d’un ancien tutoriel.
+```sh
+npm run typecheck
+npm run lint
+npm test
+composer lint
+npm run build
+npm run check:site -- http://127.0.0.1:8000
+node scripts/check-browser.mjs http://127.0.0.1:8000
+```
 
-## Tests après déploiement
+Le script navigateur utilise Chrome installé par défaut ; PLAYWRIGHT_CHANNEL peut sélectionner un autre canal installé. Il contrôle les largeurs 375, 390, 430, 768, 820, 1024 et 1440, clair/sombre, images, débordements, navigation, changement de langue, menu clavier et persistance du thème. --quick réduit les pages publiques et les largeurs testées (390/1440) ; --admin ajoute les modules privés, dont profil, éditeurs et médias contextuels. Il utilise E2E_ADMIN_EMAIL/E2E_ADMIN_PASSWORD, ou les valeurs ADMIN_EMAIL/ADMIN_PASSWORD du .env local ignoré. Ne pas utiliser un compte de production. Les scripts navigateur ne fonctionnent que sur localhost. Rapports et captures dans artifacts/, jamais public.
 
-Vérifier les pages FR/EN, les redirections d’anciens slugs, les 404 du CV, images, navigation clavier/mobile, choix clair/sombre/système, réduction des animations et contact direct. Contrôler `/robots.txt`, `/sitemap.xml`, `/api/og?lang=fr`, `/api/og?lang=en`, canonical et hreflang sur le domaine final.
+PHPUnit utilise SQLite en mémoire par défaut. Pour PostgreSQL, créer une base de test dédiée, puis définir DB_CONNECTION=pgsql, DB_DATABASE=espoir_portfolio_test et les autres DB_* avant php artisan test. RefreshDatabase réinitialise cette base : ne jamais viser la base de production. Les tests couvrent contenus et empreintes, traductions, publication, autorisations, CRUD, uploads, confidentialité FOMIN, contact/honeypot/throttle, visites, archivage/suppression, visibilité des compétences, migrations, SEO, Markdown et seed idempotent.
 
-Effectuer un envoi réel autorisé depuis le formulaire : réception dans `CONTACT_EMAIL`, réponse vers l’adresse du visiteur, et absence de faux succès après échec. Les essais locaux sans clé ne vérifient pas la délivrabilité. Aucun analytics n’est installé ; en ajouter seulement si souhaité.
+### Parcours navigateur avec écritures isolées
 
-## Rollback simple
+`check:admin` crée et supprime des contenus automatiques, vérifie filtres/pagination, saisies FR/EN, publication, archivage, messages, deux emails MailHog et retour en haut. Il exige le serveur local 8001 et E2E_DISPOSABLE=true. Les fixtures automatiques sont distinctes du jeu « Manual QA Data », qui reste à saisir manuellement depuis le README.
 
-Dans Vercel, restaurer le dernier déploiement validé via les actions du projet. Si nécessaire, rétablir aussi les variables modifiées puis redéployer le commit précédent. Ne jamais compter sur le rollback du code pour annuler une modification DNS ou un secret révoqué. Il n’y a aucune migration de base de données.
+Dans un terminal PowerShell réservé à la base de test locale existante :
 
-## Checklist Production
+```powershell
+$env:PHP_INI_SCAN_DIR = (Join-Path (Get-Location) '.local/php')
+$env:DB_CONNECTION = 'pgsql'
+$env:DB_HOST = '127.0.0.1'
+$env:DB_PORT = '55432'
+$env:DB_DATABASE = 'espoir_portfolio_test'
+# Renseigner DB_USERNAME/DB_PASSWORD pour ce cluster local.
+$env:APP_URL = 'http://127.0.0.1:8001'
+php artisan migrate
+php tests/fixtures/bootstrap-browser.php
+php artisan serve --host=127.0.0.1 --port=8001 --no-reload
+```
 
-- [ ] Dépôt Git créé et publié, lockfile inclus.
-- [ ] Domaine final, DNS et HTTPS vérifiés.
-- [ ] Variables d’environnement définies pour le bon environnement.
-- [ ] WhatsApp, email public et LinkedIn vérifiés.
-- [ ] Resend et domaine expéditeur vérifiés.
-- [ ] `CONTACT_SECRET` stable configuré sur toutes les instances.
-- [ ] metadataBase/canonical/hreflang sur le domaine final.
-- [ ] OpenGraph FR/EN vérifié.
-- [ ] Analytics ajouté uniquement si souhaité.
-- [ ] Formulaire testé jusqu’à la réception réelle.
-- [ ] Mobile, clavier, thèmes et reduced-motion vérifiés.
-- [ ] SEO : `SITE_INDEXABLE=true`, robots et sitemap vérifiés.
-- [ ] Build production et tests réussis.
+Le helper refuse toute autre connexion, hôte, port ou base. Il réutilise ADMIN_EMAIL/ADMIN_PASSWORD du .env local ignoré pour un compte jetable, et écrit ses identifiants dans artifacts/browser-credentials.json, ignoré par Git. MailHog doit être actif et CONTACT_SEND_CONFIRMATION=true. Dans un deuxième terminal :
 
-La limitation anti-abus applicative est locale à chaque instance ; les protections de trafic de la plateforme doivent être adaptées si nécessaire. Aucun secret, email envoyé ni déploiement réel n’est requis pour les tests locaux.
+```powershell
+$env:E2E_DISPOSABLE = 'true'
+$env:E2E_CREDENTIALS_FILE = 'artifacts/browser-credentials.json'
+npm run check:admin
+```
+
+Après le parcours, arrêter le serveur 8001, puis lancer php artisan test dans le terminal configuré pour espoir_portfolio_test afin de nettoyer ses fixtures par RefreshDatabase. Supprimer artifacts/browser-credentials.json. Ne pas exécuter PHPUnit simultanément au parcours navigateur ; les deux utilisent la même base jetable. Le serveur et la base quotidiens restent séparés. Les captures et rapports restent dans artifacts/.
+
+## VPS — installation initiale
+
+Le domaine demandé est espoir.axumindustries.com ; la distribution du VPS reste à préciser. Installer ses paquets adaptés pour Nginx, PHP 8.4-FPM avec extensions, Composer 2, Node 24 et PostgreSQL. Préparer un utilisateur de déploiement, une base dédiée et /srv/espoir-portfolio, puis y cloner le dépôt. Ne pas exposer PostgreSQL, SSR ou MailHog à Internet.
+
+```sh
+cd /srv/espoir-portfolio
+composer install --no-dev --prefer-dist --optimize-autoloader
+cp .env.example .env
+# Renseigner les valeurs production ci-dessous avant les migrations.
+php artisan key:generate
+php artisan migrate --seed --force
+php artisan storage:link
+php artisan admin:create
+npm ci
+npm run build
+php artisan optimize
+```
+
+Configurer APP_ENV=production, APP_DEBUG=false, APP_URL=https://son-domaine, SESSION_SECURE_COOKIE=true, SITE_INDEXABLE=true ; DB_* réels et SMTP réel avec expéditeur vérifié. Conserver APP_KEY après création. Le transport initial est SMTP ; Resend peut être configuré ultérieurement avec un transport compatible, sans exposer sa clé au navigateur.
+
+Autoriser PHP-FPM à écrire uniquement dans storage et bootstrap/cache. Les sources, .env et vendor ne doivent pas être modifiables par les requêtes web. Exemple, à adapter au propriétaire de déploiement :
+
+```sh
+sudo chgrp -R www-data storage bootstrap/cache
+sudo chmod -R ug+rwX storage bootstrap/cache
+```
+
+Installer deploy/nginx.conf dans la configuration Nginx du site, remplacer server_name par son domaine, vérifier le socket PHP 8.4 et ajouter HTTPS avec son certificat. La racine doit être /srv/espoir-portfolio/public, jamais le dépôt. Le fichier fourni est une base HTTP locale avant configuration TLS. Activer la redirection HTTP→HTTPS et conserver les cookies sécurisés une fois TLS actif.
+
+Installer deploy/espoir-ssr.service dans /etc/systemd/system ; vérifier les chemins php et node, puis :
+
+```sh
+sudo systemctl daemon-reload
+sudo systemctl enable --now espoir-ssr
+sudo nginx -t
+sudo systemctl reload nginx
+php artisan inertia:check-ssr
+```
+
+Le service SSR écoute uniquement 127.0.0.1:13714. Aucun worker de queue n’est nécessaire avec QUEUE_CONNECTION=sync. Si un transport asynchrone est activé plus tard, ajouter un worker supervisé et ses contrôles avant de changer cette variable.
+
+## Mise à jour, sauvegarde et rollback
+
+Sauvegarder PostgreSQL et storage/app/public avant déploiement. Déployer un commit identifié et conserver la possibilité de restaurer le commit précédent avec ses lockfiles. Exécuter composer install --no-dev, npm ci, npm run build, php artisan migrate --force et php artisan optimize ; redémarrer espoir-ssr et recharger PHP-FPM. Ne pas lancer migrate:fresh sur un VPS. db:seed est idempotent mais n’est pas requis à chaque mise à jour.
+
+Sauvegarder quotidiennement la base avec pg_dump et les fichiers uploadés dans un emplacement distinct protégé ; vérifier une restauration. Une migration de base n’est pas annulée par un simple rollback Git : examiner ses effets et restaurer la sauvegarde si nécessaire. Conserver APP_KEY et les secrets hors dépôt.
+
+Contrôler après déploiement : santé /up, SSR, FR/EN, images, admin privé, contact, canonical/hreflang, sitemap et robots. Un test de délivrabilité réel exige l’autorisation du propriétaire. Les migrations de simplification conservent les textes et les médias existants. Un rollback reconstruit les colonnes supprimées mais ne reconstitue pas leurs anciennes métadonnées, les paramètres retirés ni les événements supprimés : la sauvegarde préalable reste la source d’un retour complet. Le seeder n’insère jamais le jeu « Manual QA Data », disponible uniquement dans le README.
+
+La CI fournie exécute les contrôles sur PostgreSQL, sans clé SSH, secrets de déploiement ni publication automatique. Aucun VPS n’a été déployé pendant la migration.

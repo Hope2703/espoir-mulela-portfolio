@@ -1,0 +1,264 @@
+{
+  "projects": [
+    {
+      "id": "culinapos",
+      "slug": "culinapos",
+      "title": {
+        "fr": "CulinaPOS",
+        "en": "CulinaPOS"
+      },
+      "media": [
+        {
+          "src": "/images/projects/culinapos/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la présentation publique de CulinaPOS et de son aperçu de tableau de bord.",
+            "en": "Actual capture of CulinaPOS’s public presentation and dashboard preview."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "whasend",
+      "slug": "whasend",
+      "title": {
+        "fr": "WhatsApp Sender",
+        "en": "WhatsApp Sender"
+      },
+      "media": [
+        {
+          "src": "/images/projects/whasend/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la présentation publique de Whasend avec son exemple d’intégration API.",
+            "en": "Actual capture of Whasend’s public presentation and API integration example."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "maliyaflow",
+      "slug": "maliyaflow",
+      "title": {
+        "fr": "MaliyaFlow",
+        "en": "MaliyaFlow"
+      },
+      "media": [
+        {
+          "src": "/images/projects/maliyaflow/home.jpeg",
+          "alt": {
+            "fr": "Accueil : tâches du jour, transactions et budget",
+            "en": "Home: daily tasks, transactions and budget"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280
+        },
+        {
+          "src": "/images/projects/maliyaflow/tasks.jpeg",
+          "alt": {
+            "fr": "Calendrier des tâches et sélection du jour",
+            "en": "Task calendar and day selection"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280
+        },
+        {
+          "src": "/images/projects/maliyaflow/growth.jpeg",
+          "alt": {
+            "fr": "Espace croissance : conseils et routines",
+            "en": "Growth area: guidance and routines"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280
+        },
+        {
+          "src": "/images/projects/maliyaflow/performance.jpeg",
+          "alt": {
+            "fr": "Suivi de la discipline et de la santé financière",
+            "en": "Discipline and financial health overview"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280
+        },
+        {
+          "src": "/images/projects/maliyaflow/login.jpeg",
+          "alt": {
+            "fr": "Écran de connexion MaliyaFlow",
+            "en": "MaliyaFlow sign-in screen"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280
+        }
+      ]
+    },
+    {
+      "id": "axum",
+      "slug": "axum",
+      "title": {
+        "fr": "Axum Industries",
+        "en": "Axum Industries"
+      },
+      "media": [
+        {
+          "src": "/images/projects/axum/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la page publique Axum Industries présentant ses solutions technologiques.",
+            "en": "Actual capture of Axum Industries’ public technology solutions page."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "institutionnel",
+      "slug": "projet-institutionnel",
+      "title": {
+        "fr": "FOMIN",
+        "en": "FOMIN"
+      },
+      "media": [
+        {
+          "src": "/images/projects/fomin/fomin-dashboard.png",
+          "alt": {
+            "fr": "Tableau de bord du logiciel de gestion de la redevance minière du FOMIN",
+            "en": "FOMIN mining royalty management dashboard"
+          },
+          "width": 1672,
+          "height": 941,
+          "kind": "screenshot"
+        }
+      ]
+    },
+    {
+      "id": "libiki-lya-kongo",
+      "slug": "libiki-lya-kongo",
+      "title": {
+        "fr": "Libiki Lya Kongo",
+        "en": "Libiki Lya Kongo"
+      },
+      "media": [
+        {
+          "src": "/images/projects/libiki-lya-kongo/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Libiki Lya Kongo",
+            "en": "Screenshot of the Libiki Lya Kongo public website"
+          },
+          "kind": "screenshot",
+          "width": 1265,
+          "height": 712
+        }
+      ]
+    },
+    {
+      "id": "esikanayo",
+      "slug": "esikanayo",
+      "title": {
+        "fr": "Esikanayo",
+        "en": "Esikanayo"
+      },
+      "media": [
+        {
+          "src": "/images/projects/esikanayo/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Esikanayo",
+            "en": "Screenshot of the Esikanayo public website"
+          },
+          "kind": "screenshot",
+          "width": 1265,
+          "height": 712
+        }
+      ]
+    },
+    {
+      "id": "agriculture-pour-tous",
+      "slug": "agriculture-pour-tous",
+      "title": {
+        "fr": "Agriculture Pour Tous",
+        "en": "Agriculture Pour Tous"
+      },
+      "media": [
+        {
+          "src": "/images/projects/agriculture/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Agriculture Pour Tous",
+            "en": "Screenshot of the Agriculture Pour Tous public website"
+          },
+          "kind": "screenshot",
+          "width": 1270,
+          "height": 714
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "experiences": 4,
+    "education": 3,
+    "certifications": 2,
+    "skills": 4
+  },
+  "assets": [
+    {
+      "path": "profile/espoir-mulela.jpg",
+      "sha256": "ea77eba2408629f686df318dca49425fd02d485a1beefcbf41f410e7207e4bf8"
+    },
+    {
+      "path": "projects/agriculture/public-preview.jpg",
+      "sha256": "a7606c8dcdcc7e967673fb959e08c33457f951d3e7515e9a59dd8105fd3bd0d1"
+    },
+    {
+      "path": "projects/axum/public-preview.jpg",
+      "sha256": "ccf84803457214426ff4890581402dcbd42494ceb92159b660f922e66bafaaff"
+    },
+    {
+      "path": "projects/culinapos/public-preview.jpg",
+      "sha256": "6b46bfaf869b4fc438eca7774953822704d7fa330dcbe7455b18e2be201d4375"
+    },
+    {
+      "path": "projects/esikanayo/public-preview.jpg",
+      "sha256": "12249627fbd40339425154587e2d8fb526672e91df189037785f6f8939ac56bd"
+    },
+    {
+      "path": "projects/fomin/fomin-dashboard.png",
+      "sha256": "81fa8730c19457b68d4a757f7bb434084f4ad439edcc6fcc9e63e56fdb15e325"
+    },
+    {
+      "path": "projects/libiki-lya-kongo/public-preview.jpg",
+      "sha256": "360b20f1eca301985b35c9d74d8392bcb305e339c4eca59d03d79a75c7909fad"
+    },
+    {
+      "path": "projects/maliyaflow/growth.jpeg",
+      "sha256": "deadf36999ad66c6b5d433cc5edccaf6423b397c9f34ddf582676049f9e51a19"
+    },
+    {
+      "path": "projects/maliyaflow/home.jpeg",
+      "sha256": "420d7c14f5b81d96ab97e7f2b14d154538390e2ae8d36ac4cab7f64b5552af67"
+    },
+    {
+      "path": "projects/maliyaflow/login.jpeg",
+      "sha256": "99d5584b33584594921aac58ed060c26e1d7cd9b38cd04f78fb73d82f6a855c9"
+    },
+    {
+      "path": "projects/maliyaflow/performance.jpeg",
+      "sha256": "881f018e45ffcf46d7d9a46236ddea3b12e3f1e376488573a6ab32233e39ef11"
+    },
+    {
+      "path": "projects/maliyaflow/tasks.jpeg",
+      "sha256": "faf6b47dd196fa97ab868b4a02d19d037ea7db8eb44caedc53c606d5fc75a511"
+    },
+    {
+      "path": "projects/whasend/public-preview.jpg",
+      "sha256": "e8fd2b61144305bb09bc1769b24a7ee282d3c6a91d14394ccbba1846f18b0e5c"
+    }
+  ]
+}

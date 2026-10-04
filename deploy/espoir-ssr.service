@@ -1,0 +1,15 @@
+[Unit]
+Description=Espoir portfolio Inertia SSR
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/srv/espoir-portfolio
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/php /srv/espoir-portfolio/artisan inertia:start-ssr
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

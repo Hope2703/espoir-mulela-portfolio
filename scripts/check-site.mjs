@@ -1,160 +1,125 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
-import { projects } from "../src/content/projects/index.ts";
-import { profile } from "../src/data/profile.ts";
-const base = process.argv[2] || "http://127.0.0.1:3002";
-const pages = [
-  "/",
-  "/en",
-  "/projets",
-  "/en/projects",
-  "/a-propos",
-  "/en/about",
-  "/activites",
-  "/en/activities",
-  "/publications",
-  "/en/publications",
-  "/contact",
-  "/en/contact",
-];
-for (const { slug } of projects)
-  pages.push("/projets/" + slug, "/en/projects/" + slug);
-for (const image of [
-  ...projects.flatMap((p) => p.media),
-  ...(profile.portrait ? [profile.portrait] : []),
-]) {
-  assert.ok((await fetch(base + image.src)).ok, image.src);
-}
-for (const [oldSlug, newSlug] of [
-  ["maliflow", "maliyaflow"],
-  ["association-web-platform", "libiki-lya-kongo"],
-]) {
-  for (const prefix of ["/projets/", "/en/projects/"]) {
-    const response = await fetch(base + prefix + oldSlug, {
-      redirect: "manual",
+import http from "node:http";
+import https from "node:https";
+// Avoid an Undici parser regression in Node 24 when Laravel closes connections.
+function fetch(url, options = {}) {
+    return new Promise((resolve, reject) => {
+        const transport = url.startsWith("https:") ? https : http;
+        const request = transport.get(url, { agent: false }, (response) => {
+            const chunks = [];
+            response.on("data", (chunk) => chunks.push(chunk));
+            response.on("error", reject);
+            response.on("end", () => {
+                if (
+                    response.statusCode >= 300 &&
+                    response.statusCode < 400 &&
+                    response.headers.location &&
+                    options.redirect !== "manual"
+                ) {
+                    resolve(
+                        fetch(
+                            new URL(response.headers.location, url).href,
+                            options,
+                        ),
+                    );
+                    return;
+                }
+                resolve({
+                    status: response.statusCode,
+                    ok: response.statusCode >= 200 && response.statusCode < 300,
+                    headers: {
+                        get: (key) => response.headers[key.toLowerCase()],
+                    },
+                    text: async () => Buffer.concat(chunks).toString("utf8"),
+                });
+            });
+        });
+        request.on("error", reject);
+        request.setTimeout(30000, () =>
+            request.destroy(new Error("HTTP check timeout: " + url)),
+        );
     });
-    assert.equal(response.status, 308);
-    assert.ok(response.headers.get("location").endsWith(prefix + newSlug));
-  }
 }
-let links = new Set();
-for (const route of pages) {
-  const res = await fetch(base + route);
-  assert.equal(res.status, 200, route);
-  const html = await res.text();
-  assert.equal(
-    (html.match(/<h1(?:\s|>)/g) || []).length,
-    1,
-    route + " has one H1",
-  );
-  assert.match(
-    html,
-    route.startsWith("/en") ? /<html[^>]+lang="en"/ : /<html[^>]+lang="fr"/,
-    route + " locale",
-  );
-  assert.match(html, /rel="canonical"/, route + " canonical");
-  assert.match(html, /hreflang="fr"/i, route + " hreflang");
-  assert.ok(
-    !html.includes("Contenu de démonstration"),
-    route + " production excludes demos",
-  );
-  assert.ok(
-    !html.includes("Demonstration content"),
-    route + " production excludes EN demos",
-  );
-  assert.ok(
-    !html.includes("https://makiradrc.com/"),
-    route + " excludes temporary URL",
-  );
-  assert.ok(
-    !html.includes("https://sender.makiradrc.com/"),
-    route + " excludes temporary URL",
-  );
-  if (route.includes("projet-institutionnel")) {
-    assert.ok(html.includes("FOMIN"), route + " named project");
-    assert.ok(
-      html.includes("Taprinella Logistic"),
-      route + " employer attribution",
+const base = process.argv[2] ?? "http://127.0.0.1:8000";
+
+const projects = JSON.parse(
+    fs.readFileSync("database/seeders/data/portfolio.json", "utf8"),
+).projects;
+const expectedPages = 12 + projects.length * 2;
+const routes = [
+    "/",
+    "/en",
+    "/projets",
+    "/en/projects",
+    "/a-propos",
+    "/en/about",
+    "/activites",
+    "/en/activities",
+    "/publications",
+    "/en/publications",
+    "/contact",
+    "/en/contact",
+    ...projects.flatMap((p) => [
+        "/projets/" + p.slug,
+        "/en/projects/" + p.slug,
+    ]),
+];
+const results = [];
+for (const path of routes) {
+    const response = await fetch(base + path);
+    assert.equal(response.status, 200, path);
+    const html = await response.text();
+    assert.equal(
+        (html.match(/<h1(?:\s|>)/g) ?? []).length,
+        1,
+        path + " SSR H1",
     );
-  }
-  assert.ok(
-    !html.includes("Capture du site public · données de démonstration"),
-    route + " no internal media label",
-  );
-  for (const match of html.matchAll(/href="(\/[^"#?]*)"/g)) {
-    const url = match[1];
-    if (!url.startsWith("/_next/") && !url.startsWith("//")) links.add(url);
-  }
-  console.log("OK", route);
+    assert.match(html, /rel="canonical"/);
+    assert.match(html, /application\/ld\+json/);
+    assert.match(
+        html,
+        new RegExp(
+            '<html[^>]+lang="' + (path.startsWith("/en") ? "en" : "fr") + '"',
+        ),
+    );
+    assert.ok(/hreflang="fr"/i.test(html), path + " FR alternate");
+    assert.ok(/hreflang="en"/i.test(html), path + " EN alternate");
+    results.push({ path, status: response.status, ssr: true });
 }
-for (const route of [
-  "/publications/besoin-architecture",
-  "/en/publications/besoin-architecture",
-  "/activites/atelier-architecture-demo",
-  "/projets/inexistant",
-  "/cv",
-  "/en/resume",
-  "/documents/espoir-mulela-cv-fr.pdf",
-  "/documents/espoir-mulela-cv-en.pdf",
+for (const path of [
+    "/cv",
+    "/resume",
+    "/register",
+    "/projets/does-not-exist",
+    "/publications/missing",
+])
+    assert.equal((await fetch(base + path)).status, 404, path);
+assert.equal(
+    (await fetch(base + "/admin", { redirect: "manual" })).status,
+    302,
+);
+for (const [from, to] of [
+    ["maliflow", "maliyaflow"],
+    ["association-web-platform", "libiki-lya-kongo"],
 ]) {
-  assert.equal(
-    (await fetch(base + route)).status,
-    404,
-    route + " unavailable in production",
-  );
+    const response = await fetch(base + "/projets/" + from, {
+        redirect: "manual",
+    });
+    assert.equal(response.status, 301);
+    assert.ok(response.headers.get("location").endsWith("/projets/" + to));
 }
-for (const link of links) {
-  assert.ok((await fetch(base + link)).ok, "Link " + link);
-}
-for (const file of ["/api/og", "/robots.txt", "/sitemap.xml"])
-  assert.ok((await fetch(base + file)).ok, file);
-const invalid = await fetch(base + "/api/contact", {
-  method: "POST",
-  headers: { Origin: base, "Content-Type": "application/json" },
-  body: JSON.stringify({
-    name: "",
-    email: "bad",
-    subject: "wrong",
-    message: "short",
-  }),
-});
-assert.equal(invalid.status, 422);
-const foreign = await fetch(base + "/api/contact", {
-  method: "POST",
-  headers: {
-    Origin: "https://foreign.example",
-    "Content-Type": "application/json",
-  },
-  body: "{}",
-});
-assert.equal(foreign.status, 403);
-const oversized = await fetch(base + "/api/contact", {
-  method: "POST",
-  headers: { Origin: base, "Content-Type": "application/json" },
-  body: JSON.stringify({ message: "x".repeat(25000) }),
-});
-assert.equal(oversized.status, 413);
-const report = {
-  date: new Date().toISOString(),
-  base,
-  pages: pages.length,
-  internalLinks: links.size,
-  result: "pass",
-  checks: [
-    "routes",
-    "locales",
-    "H1",
-    "canonical",
-    "hreflang",
-    "production demo exclusion",
-    "FOMIN employer attribution",
-    "temporary links excluded",
-    "removed CV and OG assets",
-    "server validation",
-    "origin rejection",
-    "body limit",
-  ],
-};
+const sitemap = await (await fetch(base + "/sitemap.xml")).text();
+assert.equal((sitemap.match(/<loc>/g) ?? []).length, expectedPages);
+assert.ok(!sitemap.includes("/admin"));
+for (const image of projects.flatMap((p) => p.media))
+    assert.ok((await fetch(base + "/storage" + image.src)).ok, image.src);
 fs.mkdirSync("artifacts", { recursive: true });
-fs.writeFileSync("artifacts/site-checks.json", JSON.stringify(report, null, 2));
-console.log(report);
+fs.writeFileSync(
+    "artifacts/site-checks.json",
+    JSON.stringify(results, null, 2),
+);
+console.log(
+    expectedPages +
+        " pages FR/EN, SSR, SEO, 404, redirections, sitemap et médias : OK",
+);

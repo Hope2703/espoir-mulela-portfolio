@@ -1,0 +1,20 @@
+<?php
+
+return ['name' => 'Name',
+    'email' => 'Email',
+    'subject' => 'Subject',
+    'message' => 'Message',
+    'choose' => 'Choose a subject',
+    'send' => 'Send message',
+    'sending' => 'Sending…',
+    'success' => 'Your message has been sent. Thank you for getting in touch.',
+    'error' => 'The message could not be sent. Please try again or email me directly.',
+    'unconfigured' => 'Sending is currently unavailable. Your text remains in the form. You can contact me on WhatsApp or by email.',
+    'limited' => 'Too many recent attempts. Please try later or contact me directly.',
+    'invalid' => 'Please check the highlighted fields.',
+    'names' => ['Professional opportunity', 'Collaboration', 'Project', 'Consulting', 'Partnership', 'Event', 'Other'],
+    'fields' => ['name' => 'Enter a name between 2 and 100 characters.',
+        'email' => 'Enter a valid email address.',
+        'subject' => 'Choose a subject.',
+        'message' => 'Your message must contain between 20 and 5,000 characters.'],
+    'privacy' => 'Your details are only used to respond to your enquiry. They are not published on the website.'];

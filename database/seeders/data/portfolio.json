@@ -1,0 +1,664 @@
+{
+  "socialLinks": [
+    {
+      "name": "WhatsApp",
+      "href": "https://wa.me/243853621283"
+    },
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/in/espoir-mulela-20a282247"
+    },
+    {
+      "name": "Email",
+      "href": "mailto:espoirmulela67@gmail.com"
+    }
+  ],
+  "profile": {
+    "name": "Espoir Mulela Mastolo",
+    "location": {
+      "fr": "Kinshasa, République démocratique du Congo",
+      "en": "Kinshasa, Democratic Republic of the Congo"
+    },
+    "introduction": {
+      "fr": "Je pars du besoin métier pour construire des solutions numériques utiles, fiables et évolutives. De la première discussion à la mise en production, je relie les usages, le code et les systèmes.",
+      "en": "I start with the business need to build useful, reliable digital solutions that can evolve. From the first conversation to production, I connect people’s workflows, code and systems."
+    },
+    "portrait": {
+      "src": "/images/profile/espoir-mulela.jpg",
+      "alt": {
+        "fr": "Espoir Mulela Mastolo",
+        "en": "Espoir Mulela Mastolo"
+      },
+      "width": 1707,
+      "height": 2560,
+      "kind": "portrait"
+    }
+  },
+  "experiences": [
+    {
+      "organization": "Axum Industries",
+      "role": {
+        "fr": "Cofondateur · Ingénieur logiciel · Responsable technique",
+        "en": "Co-founder · Software Engineer · Technical Lead"
+      },
+      "description": {
+        "fr": "Construire des produits et donner une direction technique à une initiative entrepreneuriale.",
+        "en": "Building products and shaping the technical direction of an entrepreneurial initiative."
+      },
+      "contributions": [
+        {
+          "fr": "Conception de produits numériques, développement backend et full-stack.",
+          "en": "Digital product design, backend and full-stack development."
+        },
+        {
+          "fr": "Architecture applicative, modélisation des données et déploiement.",
+          "en": "Application architecture, data modelling and deployment."
+        }
+      ]
+    },
+    {
+      "organization": "Esikanayo",
+      "role": {
+        "fr": "Cofondateur · Ingénieur logiciel",
+        "en": "Co-founder · Software Engineer"
+      },
+      "description": {
+        "fr": "Accompagner la digitalisation, du besoin exprimé à une plateforme utilisable.",
+        "en": "Supporting digitalisation, from a stated need to a usable platform."
+      },
+      "contributions": [
+        {
+          "fr": "Analyse des besoins et conception de plateformes web.",
+          "en": "Requirements analysis and web platform design."
+        },
+        {
+          "fr": "Développement, accompagnement technique, déploiement et maintenance.",
+          "en": "Development, technical support, deployment and maintenance."
+        }
+      ]
+    },
+    {
+      "organization": "Taprinella Logistic SARL",
+      "role": {
+        "fr": "Développeur logiciel",
+        "en": "Software Developer"
+      },
+      "description": {
+        "fr": "Contribution au développement du logiciel de gestion de la redevance minière du FOMIN, dans le cadre de mon travail chez Taprinella Logistic.",
+        "en": "Contributing to FOMIN’s mining royalty management software as part of my work at Taprinella Logistic."
+      },
+      "contributions": [
+        {
+          "fr": "FOMIN : développement et maintenance d’un logiciel métier existant de gestion de la redevance minière.",
+          "en": "FOMIN: development and maintenance of existing mining royalty management software."
+        },
+        {
+          "fr": "Déploiement, administration technique et collaboration avec les équipes réseau et IT.",
+          "en": "Deployment, technical administration and collaboration with network and IT teams."
+        }
+      ]
+    },
+    {
+      "organization": "Ministère des Finances — RDC",
+      "role": {
+        "fr": "Stage en informatique",
+        "en": "IT internship"
+      },
+      "description": {
+        "fr": "Une expérience de l’informatique au contact des utilisateurs dans un contexte institutionnel.",
+        "en": "An experience of IT close to users in an institutional setting."
+      },
+      "contributions": [
+        {
+          "fr": "Support informatique, maintenance et assistance technique aux utilisateurs.",
+          "en": "IT support, maintenance and technical assistance for users."
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "organization": "Université Protestante au Congo — UPC",
+      "period": "2021–2025",
+      "title": {
+        "fr": "Licence — parcours en ingénierie logicielle",
+        "en": "Bachelor’s degree — software engineering studies"
+      },
+      "description": {
+        "fr": "Diplôme obtenu avec la mention Bien. Une base en algorithmique, programmation, conception logicielle, bases de données et développement web.",
+        "en": "Degree awarded with the distinction “Bien”. A foundation in algorithms, programming, software design, databases and web development."
+      }
+    },
+    {
+      "organization": "Kadea Academy",
+      "period": "2026",
+      "title": {
+        "fr": "Formation en développement en intelligence artificielle",
+        "en": "Artificial Intelligence development programme"
+      },
+      "description": {
+        "fr": "Spécialisation en cours dans la continuité de mon parcours logiciel. Le travail actuel porte sur Python, la programmation, la logique et les fondamentaux algorithmiques nécessaires à la suite du programme.",
+        "en": "An ongoing specialisation extending my software engineering background. Current work focuses on Python, programming, logic and the algorithmic foundations needed for the next stages."
+      }
+    },
+    {
+      "organization": "New Hope College",
+      "title": {
+        "fr": "Formation en anglais — niveau 4",
+        "en": "English training — Level 4"
+      },
+      "description": {
+        "fr": "Un parcours linguistique pour travailler, apprendre et échanger dans un contexte international.",
+        "en": "Language training to work, learn and communicate internationally."
+      }
+    }
+  ],
+  "certifications": [
+    {
+      "organization": "Duolingo",
+      "title": "Duolingo English Test",
+      "detail": {
+        "fr": "110 / 160 · niveau B2",
+        "en": "110 / 160 · B2 level"
+      }
+    },
+    {
+      "organization": "ANSSI",
+      "title": "SecNumAcadémie",
+      "detail": {
+        "fr": "Fondamentaux de cybersécurité, protection des données et sécurité des accès.",
+        "en": "Cybersecurity foundations, data protection and access security."
+      }
+    }
+  ],
+  "skills": [
+    {
+      "title": {
+        "fr": "Applications & produits",
+        "en": "Applications & products"
+      },
+      "description": {
+        "fr": "Concevoir des parcours lisibles et des outils adaptés aux usages métier.",
+        "en": "Designing clear user journeys and tools suited to business workflows."
+      },
+      "tools": [
+        "Laravel",
+        "React",
+        "TypeScript",
+        "JavaScript"
+      ]
+    },
+    {
+      "title": {
+        "fr": "Backend & données",
+        "en": "Backend & data"
+      },
+      "description": {
+        "fr": "Structurer la logique métier, les API et les données qui font fonctionner le produit.",
+        "en": "Structuring the business logic, APIs and data behind a product."
+      },
+      "tools": [
+        "PHP",
+        "Node.js",
+        "SQL",
+        "API REST"
+      ]
+    },
+    {
+      "title": {
+        "fr": "Systèmes & exploitation",
+        "en": "Systems & operations"
+      },
+      "description": {
+        "fr": "Relier développement, déploiement, maintenance et sécurité applicative.",
+        "en": "Connecting development, deployment, maintenance and application security."
+      },
+      "tools": [
+        "Git",
+        "Linux",
+        "Windows Server",
+        "Déploiement / Deployment"
+      ]
+    },
+    {
+      "title": {
+        "fr": "IA & Data",
+        "en": "AI & Data"
+      },
+      "description": {
+        "fr": "Une spécialisation en cours chez Kadea Academy, centrée actuellement sur Python et les bases de la programmation.",
+        "en": "A direction of specialisation supported by my current training at Kadea Academy."
+      },
+      "tools": [
+        "Python",
+        "Algorithmique / Algorithms"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "id": "culinapos",
+      "slug": "culinapos",
+      "title": {
+        "fr": "CulinaPOS",
+        "en": "CulinaPOS"
+      },
+      "shortDescription": {
+        "fr": "Réunir les commandes, la caisse et les stocks dans un produit pensé pour le terrain.",
+        "en": "Bringing orders, point of sale and inventory together in a product built for real operations."
+      },
+      "description": {
+        "fr": "Une plateforme de gestion de restaurant : menus, commandes, caisse, stocks, clients et rapports d’activité.",
+        "en": "Restaurant management: menus, orders, point of sale, inventory, customers and reporting."
+      },
+      "role": {
+        "fr": "Développement d’un produit SaaS métier dans l’écosystème Axum Industries.",
+        "en": "Business SaaS product development within the Axum Industries ecosystem."
+      },
+      "context": {
+        "fr": "Faire fonctionner les commandes, la caisse et les stocks comme un ensemble cohérent.",
+        "en": "Make orders, payments and inventory work as one coherent system."
+      },
+      "media": [
+        {
+          "src": "/images/projects/culinapos/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la présentation publique de CulinaPOS et de son aperçu de tableau de bord.",
+            "en": "Actual capture of CulinaPOS’s public presentation and dashboard preview."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot",
+          "type": "cover"
+        }
+      ],
+      "links": [],
+      "featured": true,
+      "confidential": false
+    },
+    {
+      "id": "whasend",
+      "slug": "whasend",
+      "title": {
+        "fr": "WhatsApp Sender",
+        "en": "WhatsApp Sender"
+      },
+      "shortDescription": {
+        "fr": "Connecter les applications métier aux conversations WhatsApp.",
+        "en": "Connecting business applications to WhatsApp conversations."
+      },
+      "description": {
+        "fr": "Intégration WhatsApp, planification et automatisation des notifications. Le produit est également connu sous le nom Whasend.",
+        "en": "WhatsApp integration, scheduling and automated notifications. The product is also known as Whasend."
+      },
+      "role": {
+        "fr": "Développement d’une solution d’automatisation de messagerie.",
+        "en": "Development of a messaging automation solution."
+      },
+      "context": {
+        "fr": "Intégrer les notifications et les envois de messages aux processus applicatifs.",
+        "en": "Integrate notifications and messages into application workflows."
+      },
+      "media": [
+        {
+          "src": "/images/projects/whasend/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la présentation publique de Whasend avec son exemple d’intégration API.",
+            "en": "Actual capture of Whasend’s public presentation and API integration example."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot",
+          "type": "cover"
+        }
+      ],
+      "links": [],
+      "featured": true,
+      "confidential": false
+    },
+    {
+      "id": "maliyaflow",
+      "slug": "maliyaflow",
+      "title": {
+        "fr": "MaliyaFlow",
+        "en": "MaliyaFlow"
+      },
+      "shortDescription": {
+        "fr": "Finances personnelles, tâches et routines dans une application iOS.",
+        "en": "Personal finances, tasks and routines in an iOS application."
+      },
+      "description": {
+        "fr": "MaliyaFlow réunit un aperçu des transactions et du budget, un calendrier de tâches et un espace de conseils et de routines.\n\n## Un aperçu des finances\n\nL’accueil donne accès aux transactions, au budget, aux catégories et aux comptes. L’espace Performances permet de choisir entre le franc congolais (CDF) et le dollar américain (USD).\n\n## Des tâches aux habitudes\n\nLe calendrier permet de parcourir les jours et leurs tâches. L’espace Croissance regroupe des conseils financiers et un espace dédié aux routines.\n\n## Suivre sa progression\n\nL’écran Performances présente un score global, les jours actifs, la progression de niveau et des indicateurs de discipline et de santé financière.",
+        "en": "MaliyaFlow brings together a transaction and budget overview, a task calendar, and an area for guidance and routines.\n\n## A financial overview\n\nThe home screen provides access to transactions, budget, categories and accounts. The Performance area includes a CDF / USD selector.\n\n## From tasks to habits\n\nThe calendar lets users browse days and their tasks. The Growth area brings together financial guidance and a dedicated entry for routines.\n\n## Tracking progress\n\nThe Performance screen displays an overall score, active days, level progression, and discipline and financial health indicators."
+      },
+      "context": {
+        "fr": "Suivre son argent et organiser son quotidien depuis une même application.",
+        "en": "Keeping track of money and organising everyday life in one application."
+      },
+      "media": [
+        {
+          "src": "/images/projects/maliyaflow/home.jpeg",
+          "alt": {
+            "fr": "Accueil : tâches du jour, transactions et budget",
+            "en": "Home: daily tasks, transactions and budget"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280,
+          "type": "cover"
+        },
+        {
+          "src": "/images/projects/maliyaflow/tasks.jpeg",
+          "alt": {
+            "fr": "Calendrier des tâches et sélection du jour",
+            "en": "Task calendar and day selection"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280,
+          "type": "mobile"
+        },
+        {
+          "src": "/images/projects/maliyaflow/growth.jpeg",
+          "alt": {
+            "fr": "Espace croissance : conseils et routines",
+            "en": "Growth area: guidance and routines"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280,
+          "type": "mobile"
+        },
+        {
+          "src": "/images/projects/maliyaflow/performance.jpeg",
+          "alt": {
+            "fr": "Suivi de la discipline et de la santé financière",
+            "en": "Discipline and financial health overview"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280,
+          "type": "mobile"
+        },
+        {
+          "src": "/images/projects/maliyaflow/login.jpeg",
+          "alt": {
+            "fr": "Écran de connexion MaliyaFlow",
+            "en": "MaliyaFlow sign-in screen"
+          },
+          "kind": "screenshot",
+          "width": 591,
+          "height": 1280,
+          "type": "mobile"
+        }
+      ],
+      "links": [],
+      "featured": false,
+      "confidential": false
+    },
+    {
+      "id": "axum",
+      "slug": "axum",
+      "title": {
+        "fr": "Axum Industries",
+        "en": "Axum Industries"
+      },
+      "shortDescription": {
+        "fr": "La présence numérique d’une initiative technologique ancrée à Kinshasa.",
+        "en": "The digital presence of a technology initiative rooted in Kinshasa."
+      },
+      "description": {
+        "fr": "Une présence web publique qui donne à découvrir Axum Industries et ses activités.",
+        "en": "A public web presence introducing Axum Industries and its activities."
+      },
+      "role": {
+        "fr": "Cofondateur, ingénieur logiciel et responsable technique.",
+        "en": "Co-founder, Software Engineer and Technical Lead."
+      },
+      "context": {
+        "fr": "Présenter les solutions, les projets et la démarche de l’entreprise.",
+        "en": "Present the company’s solutions, projects and approach."
+      },
+      "media": [
+        {
+          "src": "/images/projects/axum/public-preview.jpg",
+          "alt": {
+            "fr": "Capture réelle de la page publique Axum Industries présentant ses solutions technologiques.",
+            "en": "Actual capture of Axum Industries’ public technology solutions page."
+          },
+          "width": 1265,
+          "height": 712,
+          "kind": "screenshot",
+          "type": "cover"
+        }
+      ],
+      "links": [
+        {
+          "type": "official",
+          "url": "https://axumindustries.com/"
+        }
+      ],
+      "featured": false,
+      "confidential": false
+    },
+    {
+      "id": "institutionnel",
+      "slug": "projet-institutionnel",
+      "title": {
+        "fr": "FOMIN",
+        "en": "FOMIN"
+      },
+      "shortDescription": {
+        "fr": "Contribuer à un logiciel de gestion de la redevance minière, chez Taprinella Logistic.",
+        "en": "Contributing to mining royalty management software at Taprinella Logistic."
+      },
+      "description": {
+        "fr": "Dans le cadre de mon expérience chez Taprinella Logistic, j’ai contribué au développement et à l’évolution du logiciel de gestion de la redevance minière du FOMIN.\n\n## Développement et maintenance\n\nFaire évoluer une application existante demande de comprendre ses règles métier, de maintenir ses fonctionnalités et de corriger les anomalies dans un cadre professionnel.\n\n## Confidentialité\n\nCertains détails techniques et opérationnels ne sont pas présentés pour des raisons de confidentialité.",
+        "en": "Participation in the development and evolution of FOMIN’s mining royalty management software as part of my work at Taprinella Logistic.\n\n## Development and maintenance\n\nEvolving existing software requires understanding its business rules, maintaining its features and fixing issues in a professional setting.\n\n## Confidentiality\n\nSome technical and operational details are omitted for confidentiality."
+      },
+      "context": {
+        "fr": "Un logiciel métier existant, utilisé dans un contexte institutionnel lié à la redevance minière.",
+        "en": "Existing business software used in an institutional context involving mining royalties."
+      },
+      "role": {
+        "fr": "Ingénieur / développeur chez Taprinella Logistic — contribution au projet FOMIN.",
+        "en": "Engineer / developer at Taprinella Logistic — contribution to the FOMIN project."
+      },
+      "media": [
+        {
+          "src": "/images/projects/fomin/fomin-dashboard.png",
+          "alt": {
+            "fr": "Tableau de bord du logiciel de gestion de la redevance minière du FOMIN",
+            "en": "FOMIN mining royalty management dashboard"
+          },
+          "width": 1672,
+          "height": 941,
+          "kind": "screenshot",
+          "type": "cover"
+        }
+      ],
+      "links": [],
+      "featured": true,
+      "confidential": true
+    },
+    {
+      "id": "libiki-lya-kongo",
+      "slug": "libiki-lya-kongo",
+      "title": {
+        "fr": "Libiki Lya Kongo",
+        "en": "Libiki Lya Kongo"
+      },
+      "shortDescription": {
+        "fr": "Une plateforme web associative réalisée dans l’écosystème Axum Industries.",
+        "en": "An association website created within the Axum Industries ecosystem."
+      },
+      "description": {
+        "fr": "Une plateforme web associative réalisée dans l’écosystème Axum Industries.",
+        "en": "An association website created within the Axum Industries ecosystem."
+      },
+      "context": {
+        "fr": "Une présence numérique pour rendre une organisation, ses activités et ses services accessibles.",
+        "en": "A digital presence that makes an organisation, its activities and services accessible."
+      },
+      "media": [
+        {
+          "src": "/images/projects/libiki-lya-kongo/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Libiki Lya Kongo",
+            "en": "Screenshot of the Libiki Lya Kongo public website"
+          },
+          "kind": "screenshot",
+          "width": 1265,
+          "height": 712,
+          "type": "cover"
+        }
+      ],
+      "links": [
+        {
+          "type": "official",
+          "url": "https://libikilyakongo.org/",
+          "enabled": true
+        }
+      ],
+      "featured": false,
+      "confidential": false
+    },
+    {
+      "id": "esikanayo",
+      "slug": "esikanayo",
+      "title": {
+        "fr": "Esikanayo",
+        "en": "Esikanayo"
+      },
+      "shortDescription": {
+        "fr": "Une initiative entrepreneuriale tournée vers le développement web et la digitalisation.",
+        "en": "An entrepreneurial initiative focused on web development and digitalisation."
+      },
+      "description": {
+        "fr": "Une initiative entrepreneuriale tournée vers le développement web et la digitalisation.",
+        "en": "An entrepreneurial initiative focused on web development and digitalisation."
+      },
+      "context": {
+        "fr": "Une présence numérique pour rendre une organisation, ses activités et ses services accessibles.",
+        "en": "A digital presence that makes an organisation, its activities and services accessible."
+      },
+      "media": [
+        {
+          "src": "/images/projects/esikanayo/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Esikanayo",
+            "en": "Screenshot of the Esikanayo public website"
+          },
+          "kind": "screenshot",
+          "width": 1265,
+          "height": 712,
+          "type": "cover"
+        }
+      ],
+      "links": [
+        {
+          "type": "official",
+          "url": "https://esikanayo.com/",
+          "enabled": true
+        }
+      ],
+      "featured": false,
+      "confidential": false
+    },
+    {
+      "id": "agriculture-pour-tous",
+      "slug": "agriculture-pour-tous",
+      "title": {
+        "fr": "Agriculture Pour Tous",
+        "en": "Agriculture Pour Tous"
+      },
+      "shortDescription": {
+        "fr": "Une réalisation web associée à l’écosystème Esikanayo.",
+        "en": "A web project associated with the Esikanayo ecosystem."
+      },
+      "description": {
+        "fr": "Une réalisation web associée à l’écosystème Esikanayo.",
+        "en": "A web project associated with the Esikanayo ecosystem."
+      },
+      "context": {
+        "fr": "Une présence numérique pour rendre une organisation, ses activités et ses services accessibles.",
+        "en": "A digital presence that makes an organisation, its activities and services accessible."
+      },
+      "media": [
+        {
+          "src": "/images/projects/agriculture/public-preview.jpg",
+          "alt": {
+            "fr": "Site web de Agriculture Pour Tous",
+            "en": "Screenshot of the Agriculture Pour Tous public website"
+          },
+          "kind": "screenshot",
+          "width": 1270,
+          "height": 714,
+          "type": "cover"
+        }
+      ],
+      "links": [
+        {
+          "type": "official",
+          "url": "https://agriculturepourtous.com/",
+          "enabled": false
+        }
+      ],
+      "featured": false,
+      "confidential": false
+    },
+    {
+      "id": "the-agency-drc",
+      "slug": "the-agency-drc",
+      "title": {
+        "fr": "THE AGENCY DRC",
+        "en": "THE AGENCY DRC"
+      },
+      "shortDescription": {
+        "fr": "Une plateforme immobilière associée à Axum Industries, avec recherche de biens à vendre ou à louer.",
+        "en": "A real estate platform associated with Axum Industries, with property search for sales and rentals."
+      },
+      "description": {
+        "fr": "Le site public présente une interface de recherche immobilière, des filtres de commune et de prix, ainsi qu’une page dédiée aux propriétés.\n\n## Le parcours public\n\nL’accueil propose les choix Vente et Location ainsi qu’une recherche par quartier, commune et intervalle de prix. La page Propriétés expose une recherche, des filtres et les modes grille et liste.",
+        "en": "The public website presents a property search interface, municipality and price filters, and a dedicated properties page.\n\n## The public journey\n\nThe home page offers Sale and Rent choices, together with neighborhood, municipality and price-range search. The Properties page exposes search, filters and grid/list controls."
+      },
+      "context": {
+        "fr": "The Agency DRC présente son offre immobilière et permet de consulter les biens depuis son site public.",
+        "en": "The Agency DRC presents its real estate offering and lets visitors browse properties on its public website."
+      },
+      "media": [
+        {
+          "src": "/images/projects/the-agency-drc/home-desktop.jpg",
+          "alt": {
+            "fr": "Capture réelle de l’accueil public de The Agency DRC et de son interface de recherche immobilière.",
+            "en": "Actual capture of The Agency DRC’s public home page and property search interface."
+          },
+          "width": 1200,
+          "height": 600,
+          "kind": "screenshot",
+          "type": "cover"
+        },
+        {
+          "src": "/images/projects/the-agency-drc/properties-desktop.jpg",
+          "alt": {
+            "fr": "Capture réelle de la page publique des propriétés de The Agency DRC, avec recherche et filtres.",
+            "en": "Actual capture of The Agency DRC’s public properties page, showing search and filters."
+          },
+          "width": 1200,
+          "height": 700,
+          "kind": "screenshot",
+          "type": "desktop"
+        }
+      ],
+      "links": [
+        {
+          "type": "official",
+          "url": "https://theagency.axumindustries.com/",
+          "enabled": true
+        }
+      ],
+      "featured": false,
+      "confidential": false
+    }
+  ]
+}
