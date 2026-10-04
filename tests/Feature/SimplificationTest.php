@@ -71,7 +71,8 @@ class SimplificationTest extends TestCase
         $settings['introduction'] = ['fr' => 'Présentation modifiée.', 'en' => 'Updated introduction.'];
         $this->put('/admin/settings', $settings)->assertSessionHasNoErrors();
         Education::where('current', true)->update(['title' => ['fr' => 'Formation modifiée', 'en' => 'Updated education']]);
-        Experience::first()->update(['role' => ['fr' => 'Rôle modifié', 'en' => 'Updated role']]);
+        $experience = Experience::orderByDesc('current')->orderBy('sort_order')->firstOrFail();
+        $experience->update(['role' => ['fr' => 'Rôle modifié','en' => 'Updated role',],]);
         $this->get('/')->assertInertia(fn (Assert $p) => $p->where('portfolio.introduction.fr', 'Présentation modifiée.')->where('portfolio.journeyNotes.0.title.fr', 'Formation modifiée')->where('portfolio.journeyNotes.1.title.fr', 'Rôle modifié'));
         $this->get('/en')->assertInertia(fn (Assert $p) => $p->where('portfolio.introduction.en', 'Updated introduction.'));
         foreach (['hero_title', 'journeyNotes', 'navigationName', 'location_short'] as $field) {
