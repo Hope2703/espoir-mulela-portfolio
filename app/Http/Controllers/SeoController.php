@@ -25,10 +25,10 @@ class SeoController extends Controller
         }
         $xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
         foreach ($entries as $e) {
-            $xml .= '<url><loc>'.htmlspecialchars($e['url'], ENT_XML1).'</loc>'.($e['modified'] ? '<lastmod>'.$e['modified'].'</lastmod>' : '').'</url>';
+            $xml .= '<url><loc>'.htmlspecialchars($e['url'], ENT_XML1 | ENT_QUOTES | ENT_SUBSTITUTE | ENT_DISALLOWED, 'UTF-8').'</loc>'.($e['modified'] ? '<lastmod>'.$e['modified'].'</lastmod>' : '').'</url>';
         }
 
-        return response($xml.'</urlset>', 200, ['Content-Type' => 'application/xml']);
+        return response($xml.'</urlset>', 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
     }
 
     public function robots()

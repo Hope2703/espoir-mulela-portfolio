@@ -3,7 +3,15 @@
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\SeoController;
+use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\TrackPageView;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 Route::redirect('/projets/maliflow', '/projets/maliyaflow', 301);
 Route::redirect('/en/projects/maliflow', '/en/projects/maliyaflow', 301);
@@ -25,6 +33,16 @@ foreach (['fr' => '', 'en' => 'en'] as $locale => $prefix) {
         Route::post('/contact', [ContactController::class, 'store'])->middleware('throttle:contact')->name('contact.store');
     });
 }
-Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap');
+// The XML endpoint does not need browser sessions, cookies or Inertia negotiation.
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('sitemap')->withoutMiddleware([
+    EncryptCookies::class,
+    AddQueuedCookiesToResponse::class,
+    StartSession::class,
+    ShareErrorsFromSession::class,
+    PreventRequestForgery::class,
+    SetLocale::class,
+    HandleInertiaRequests::class,
+    TrackPageView::class,
+]);
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('robots');
 Route::get('/og/{locale}.png', [SeoController::class, 'image'])->where('locale', 'fr|en');

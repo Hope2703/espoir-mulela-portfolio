@@ -42,6 +42,8 @@ HasTranslations::published exige status=published et published_at absent ou pass
 
 PageMeta produit title, description, canonical, hreflang, OpenGraph, Twitter et JSON-LD Person/WebSite/BreadcrumbList/Article. Les slugs traduits pilotent le changement de langue. Le sitemap ne contient que les éléments publiés. SITE_INDEXABLE=false interdit l’indexation ; le sitemap reste consultable pour la vérification. SSR doit fonctionner en production pour exposer le contenu complet aux moteurs sans JavaScript.
 
+GET /sitemap.xml retourne directement du XML UTF-8 avec le type application/xml, sans session, cookie ni négociation Inertia. Les middlewares de sécurité restent actifs ; aucune authentification n'est requise. Les URLs suivent le schéma de la requête : le déploiement doit servir HTTPS conformément au guide de déploiement. Les dates lastmod utilisent le format Atom et les valeurs XML sont échappées.
+
 ## Contact et analytics
 
 ContactRequest valide les champs et le honeypot ; le middleware throttle limite les essais. Le message est enregistré avant Laravel Mail. Une panne SMTP ne supprime pas le message ; le succès confirme sa réception par le site, pas sa délivrance email. ADMIN_EMAIL vide désactive la notification. Les emails utilisent une vue Blade échappée et Reply-To visiteur.
