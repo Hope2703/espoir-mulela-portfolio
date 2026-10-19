@@ -17,7 +17,8 @@ Portfolio personnel FR/EN d’Espoir Mulela Mastolo, Kinshasa, RDC. Laravel 13, 
 ## Contenu et sécurité
 
 - Aucun fait, expérience, client, résultat, métrique ou technologie inventé. Noms exacts : MaliyaFlow et Libiki Lya Kongo.
-- FOMIN : contribution chez Taprinella Logistic. Ne jamais diffuser accès, IP, URL interne, identifiant, montant ou détail confidentiel, même dans les propriétés Inertia.
+- Projet institutionnel confidentiel : contribution chez Taprinella Logistic. Les projets confidentiels ne transmettent aucun texte éditorial privé, média, alt, lien ou clé de contenu au public ; leurs métadonnées utilisent les libellés neutres Laravel. Les accès directs aux médias passent aussi par Laravel. Ne jamais diffuser accès, IP, URL interne, identifiant, montant ou détail confidentiel, même dans les propriétés Inertia.
+- Expériences confidentielles : conserver organisation, rôle et période ; afficher uniquement public_description bilingue ou le message neutre. Description et contributions restent enregistrées et privées. Taprinella est protégée par défaut tant que confidential est null ; toute désactivation est une décision éditoriale explicite.
 - Brouillons, archives et publications futures restent absents du public et du sitemap. Les deux langues sont obligatoires pour publier.
 - Toutes les routes admin exigent auth et users.is_admin. Aucun compte automatique dans le seed général. admin:create ou AdminUserSeeder explicitement configuré par ADMIN_EMAIL/ADMIN_PASSWORD utilise le même service ; ne jamais versionner un mot de passe ni écraser celui d’un compte existant.
 - Auth/admin : langue en session via POST /locale, URL unique, formulaires conservés. Public : langue par URL FR/EN pour le SEO. Les erreurs utilisent les catalogues Laravel natifs.

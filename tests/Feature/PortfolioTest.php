@@ -78,7 +78,7 @@ class PortfolioTest extends TestCase
             $this->assertEquals($original['title'], $p->title);
             $this->assertEquals($original['description'], $p->description);
             foreach (['fr', 'en'] as $l) {
-                $this->get(route('public.'.$l.'.projects.show', ['slug' => $p->translated('slug', $l)]))->assertOk()->assertInertia(fn (Assert $page) => $page->component('public/project-show')->where('project.title', $p->title));
+                $this->get(route('public.'.$l.'.projects.show', ['slug' => $p->translated('slug', $l)]))->assertOk()->assertInertia(fn (Assert $page) => $page->component('public/project-show')->where('project.title', app(PortfolioData::class)->project($p)['title']));
             }
         }
         $this->assertDatabaseCount('experiences', 4);
@@ -213,12 +213,12 @@ class PortfolioTest extends TestCase
         $this->get('/robots.txt')->assertSee('Disallow: /admin');
     }
 
-    public function test_confidential_project_only_serializes_audited_snapshot_and_no_links(): void
+    public function test_confidential_project_serializes_no_media_or_links_even_if_previously_audited(): void
     {
         $p = Project::where('confidential', true)->firstOrFail();
         $p->update(['external_url' => 'https://private.example.test']);
         $p->media()->create(['path' => 'private-unapproved.png', 'alt' => ['fr' => 'Privé', 'en' => 'Private'], 'type' => 'desktop', 'width' => 200, 'height' => 200, 'sort_order' => 99]);
-        $this->get('/projets/'.$p->slug['fr'])->assertInertia(fn (Assert $page) => $page->has('project.media', 1)->where('project.media.0.src', '/storage/images/projects/fomin/fomin-dashboard.png')->where('project.links', []))->assertDontSee('private.example.test')->assertDontSee('private-unapproved.png');
+        $this->get('/projets/'.$p->slug['fr'])->assertInertia(fn (Assert $page) => $page->where('project.media', [])->where('project.links', []))->assertDontSee('private.example.test')->assertDontSee('private-unapproved.png');
         $this->actingAs($this->admin())->post('/admin/media', ['owner_type' => 'project', 'owner_id' => $p->id, 'type' => 'desktop', 'sort_order' => 0, 'alt' => ['fr' => 'Image', 'en' => 'Image'], 'file' => UploadedFile::fake()->image('test.jpg', 200, 200)])->assertSessionHasErrors('owner_id');
     }
 
