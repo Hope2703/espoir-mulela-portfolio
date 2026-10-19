@@ -12,7 +12,6 @@ export function Home({ locale }: { locale: Locale }) {
     const t = useTranslations();
     const { profile, journeyNotes, projects, publications, activities } =
         usePortfolio();
-    const fr = locale === "fr";
     const selected = projects.filter((p) => p.featured);
     const publication = publications[0],
         activity = activities[0];
@@ -163,57 +162,14 @@ export function Home({ locale }: { locale: Locale }) {
                         <p className="lead">{t("features_profile_home_23")}</p>
                     </Reveal>
                     <Reveal as="ol" sequence="process" className="process">
-                        {(fr
-                            ? [
-                                  [
-                                      "Comprendre",
-                                      "Écouter les personnes, les usages et les contraintes.",
-                                  ],
-                                  [
-                                      "Concevoir",
-                                      "Relier les parcours, les données et les règles métier.",
-                                  ],
-                                  [
-                                      "Construire",
-                                      "Développer un ensemble cohérent et maintenable.",
-                                  ],
-                                  [
-                                      "Déployer",
-                                      "Mettre la solution au contact du terrain.",
-                                  ],
-                                  [
-                                      "Faire évoluer",
-                                      "Améliorer le produit à partir de son utilisation.",
-                                  ],
-                              ]
-                            : [
-                                  [
-                                      "Understand",
-                                      "Listen to people, workflows and constraints.",
-                                  ],
-                                  [
-                                      "Design",
-                                      "Connect journeys, data and business rules.",
-                                  ],
-                                  [
-                                      "Build",
-                                      "Develop a coherent, maintainable system.",
-                                  ],
-                                  [
-                                      "Deploy",
-                                      "Bring the solution into real-world use.",
-                                  ],
-                                  [
-                                      "Evolve",
-                                      "Improve the product through its use.",
-                                  ],
-                              ]
-                        ).map(([title, text], i) => (
-                            <li key={title}>
+                        {[1, 2, 3, 4, 5].map((step, i) => (
+                            <li key={step}>
                                 <span>0{i + 1}</span>
                                 <div>
-                                    <h3>{title}</h3>
-                                    <p>{text}</p>
+                                    <h3>{t(`home_process_${step}_title`)}</h3>
+                                    <p>
+                                        {t(`home_process_${step}_description`)}
+                                    </p>
                                 </div>
                             </li>
                         ))}

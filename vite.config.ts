@@ -10,7 +10,12 @@ export default defineConfig({
             input: ["resources/css/app.css", "resources/js/app.tsx"],
             refresh: true,
         }),
-        inertia({ ssr: { host: "127.0.0.1" } }),
+        inertia({
+            ssr: {
+                host: "127.0.0.1",
+                port: Number(process.env.INERTIA_SSR_PORT ?? 13714),
+            },
+        }),
         react(),
         tailwindcss(),
     ],

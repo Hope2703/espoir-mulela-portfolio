@@ -124,11 +124,13 @@ try {
         if ((await page.locator("html").getAttribute("data-theme")) !== "dark")
             await page.locator("button.theme-toggle").click();
         await page.reload();
+        await page.waitForLoadState("networkidle");
         assert.equal(
             await page.locator("html").getAttribute("data-theme"),
             "dark",
         );
         await page.locator(".mobile-trigger").click();
+        await page.locator("dialog").waitFor({ state: "visible" });
         assert.ok(await page.locator("dialog").isVisible());
         await page.keyboard.press("Escape");
         await page

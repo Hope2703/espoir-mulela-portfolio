@@ -21,19 +21,6 @@ export function ProjectMedia({
     const [screen, setScreen] = useState(0);
     const reduced = useReducedMotion();
     const fr = locale === "fr";
-    if (id === "institutionnel" && !media.length)
-        return (
-            <div className="project-media fomin-media">
-                <span className="media-kicker">
-                    TAPRINELLA LOGISTIC /{" "}
-                    {t("components_media_project-media_01")}
-                </span>
-                <strong>
-                    FOMIN<span aria-hidden>↳</span>
-                </strong>
-                <p>{t("components_media_project-media_02")}</p>
-            </div>
-        );
     if (id === "maliyaflow" && media.length) {
         const current = media[screen];
         return (

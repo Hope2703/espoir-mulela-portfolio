@@ -5,6 +5,9 @@
 
     RewriteEngine On
 
+    # Existing files also pass through Laravel's media confidentiality checks.
+    RewriteRule ^(?:storage/|images/projects/) index.php [L,NC]
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

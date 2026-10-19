@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\ProtectPublicMedia;
 use App\Http\Middleware\SecurityHeaders;
 use App\Http\Middleware\SetLocale;
 use App\Http\Middleware\TrackPageView;
@@ -14,6 +15,7 @@ use Inertia\Inertia;
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(web: __DIR__.'/../routes/web.php', commands: __DIR__.'/../routes/console.php', health: '/up')
     ->withMiddleware(function (Middleware $middleware) {
+        $middleware->prepend(ProtectPublicMedia::class);
         $middleware->web(append: [SetLocale::class, HandleInertiaRequests::class, TrackPageView::class, SecurityHeaders::class]);
         $middleware->alias(['admin' => EnsureAdmin::class]);
     })

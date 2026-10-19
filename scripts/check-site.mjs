@@ -112,8 +112,18 @@ for (const [from, to] of [
 const sitemap = await (await fetch(base + "/sitemap.xml")).text();
 assert.equal((sitemap.match(/<loc>/g) ?? []).length, expectedPages);
 assert.ok(!sitemap.includes("/admin"));
-for (const image of projects.flatMap((p) => p.media))
-    assert.ok((await fetch(base + "/storage" + image.src)).ok, image.src);
+for (const project of projects)
+    for (const image of project.media) {
+        const response = await fetch(base + "/storage" + image.src);
+        if (project.confidential) {
+            assert.equal(
+                response.status,
+                404,
+                "Confidential media must remain private",
+            );
+            assert.equal((await fetch(base + image.src)).status, 404);
+        } else assert.ok(response.ok, image.src);
+    }
 fs.mkdirSync("artifacts", { recursive: true });
 fs.writeFileSync(
     "artifacts/site-checks.json",

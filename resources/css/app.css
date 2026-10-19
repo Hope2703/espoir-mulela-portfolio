@@ -2231,7 +2231,7 @@ p + p {
 .project-index .maliya-secondary {
     width: 145px;
 }
-.fomin-media {
+.confidential-media {
     display: flex;
     min-height: 370px;
     flex-direction: column;
@@ -2239,7 +2239,7 @@ p + p {
     padding: 40px;
     background: var(--surface);
 }
-.fomin-media strong {
+.confidential-media strong {
     font-size: clamp(50px, 8vw, 105px);
     font-weight: 600;
     letter-spacing: -0.055em;
@@ -2248,14 +2248,14 @@ p + p {
     justify-content: space-between;
     margin: 35px 0 15px;
 }
-.fomin-media strong span {
+.confidential-media strong span {
     color: var(--accent);
 }
-.fomin-media p {
+.confidential-media p {
     font-size: 18px;
     max-width: 340px;
 }
-.case-media .fomin-media {
+.case-media .confidential-media {
     min-height: 450px;
 }
 @media (max-width: 700px) {
@@ -2281,11 +2281,11 @@ p + p {
         border-width: 3px;
         border-radius: 22px;
     }
-    .fomin-media {
+    .confidential-media {
         padding: 26px;
         min-height: 300px;
     }
-    .case-media .fomin-media {
+    .case-media .confidential-media {
         min-height: 330px;
     }
 }

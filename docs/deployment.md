@@ -68,6 +68,7 @@ npm run build
 npm run check:site -- http://127.0.0.1:8000
 node scripts/check-browser.mjs http://127.0.0.1:8000
 node scripts/check-ux.mjs http://127.0.0.1:8000
+node scripts/check-privacy.mjs http://127.0.0.1:8002
 ```
 
 Le script navigateur utilise Chrome installé par défaut ; PLAYWRIGHT_CHANNEL peut sélectionner un autre canal installé. Il contrôle les largeurs 375, 390, 430, 768, 820, 1024 et 1440, clair/sombre, images, débordements, navigation, changement de langue, menu clavier et persistance du thème. --quick réduit les pages publiques et les largeurs testées (390/1440) ; --admin ajoute les modules privés, dont profil, éditeurs et médias contextuels. Il utilise E2E_ADMIN_EMAIL/E2E_ADMIN_PASSWORD, ou les valeurs ADMIN_EMAIL/ADMIN_PASSWORD du .env local ignoré. Ne pas utiliser un compte de production. Les scripts navigateur ne fonctionnent que sur localhost. Rapports et captures dans artifacts/, jamais public.
@@ -75,6 +76,24 @@ Le script navigateur utilise Chrome installé par défaut ; PLAYWRIGHT_CHANNEL p
 `check-ux.mjs` complète ce contrôle par 192 combinaisons des six pages publiques, FR/EN et clair/sombre : 360×667, 375×812, 390×844, 430×932, 768×1024, 1024×768, 1280×800 et 1440×900. Il vérifie la position du portrait et du premier projet, le début du formulaire à 390 px, les liens publics avant les captures, l’absence de lien confidentiel et l’email du footer. Il ajoute deux hauteurs mobiles, le focus clavier, les boutons désactivés, une adresse longue injectée uniquement dans le DOM de test, reduced-motion et le SSR sans JavaScript. Les captures et le rapport sont dans `artifacts/ux-refinement/`. Il ne soumet aucun formulaire et ne crée aucun contenu. Utiliser une base locale dédiée ou une copie locale, avec MAIL_MAILER=array, pour les contrôles publics ; les visites peuvent y être comptabilisées.
 
 PHPUnit utilise SQLite en mémoire par défaut. Pour PostgreSQL, créer une base de test dédiée, puis définir DB_CONNECTION=pgsql, DB_DATABASE=espoir_portfolio_test et les autres DB_* avant php artisan test. RefreshDatabase réinitialise cette base : ne jamais viser la base de production. Les tests couvrent contenus et empreintes, traductions, publication, autorisations, CRUD, uploads, confidentialité FOMIN, contact/honeypot/throttle, visites, archivage/suppression, visibilité des compétences, migrations, SEO, Markdown et seed idempotent.
+
+### Confidentialité et médias
+
+La migration `2026_10_19_000001_add_experience_confidentiality` ajoute deux colonnes nullables aux expériences, sans UPDATE ni réécriture des données. Ne pas exécuter de seeder pour appliquer les nouveaux textes éditoriaux. Un rollback supprimerait les deux nouveaux champs et leurs éventuelles saisies : sauvegarder avant toute décision de rollback. L’évolution doit être relue et déployée explicitement ; sa présence dans le dépôt ne modifie pas le site en production.
+
+Les emplacements Nginx `/storage/` et `/images/projects/` doivent passer par `/index.php`, comme dans deploy/nginx.conf, même si le fichier existe. Le .htaccess Apache et server.php pour artisan serve font de même. Sans cette configuration, le serveur web pourrait servir directement un fichier confidentiel avant Laravel. Les URL publiques ordinaires restent identiques. Aucun fichier historique n’est supprimé. Lors d’un futur déploiement autorisé, vérifier aussi les éventuels caches/CDN et anciennes copies : le code local ne purge pas leurs contenus déjà servis. Confirmer par GET et HEAD que les anciennes URL confidentielles retournent 404 et que les images publiques restent accessibles.
+
+### Fixture isolée de non-divulgation SSR
+
+`tests/fixtures/privacy-browser.php` exige E2E_DISPOSABLE=true et crée uniquement une nouvelle base SQLite `artifacts/privacy-qa/portfolio.sqlite` ainsi qu’un disque média distinct dans ce même dossier. Il refuse d’écraser une fixture déjà présente et n’utilise ni la base quotidienne ni son disque public. Le seed initial et les marqueurs PRIVATE-QA restent dans cette fixture ; aucun texte éditorial validé n’est publié. Le transport email est array. Exemple PowerShell :
+
+```powershell
+$env:E2E_DISPOSABLE = 'true'
+php tests/fixtures/privacy-browser.php bootstrap
+php -S 127.0.0.1:8002 -t public tests/fixtures/privacy-browser.php
+```
+
+Le helper attend un serveur SSR du build de production sur 127.0.0.1:13715, pour ne pas remplacer un autre serveur local sur 13714. Pour ce contrôle, définir `$env:INERTIA_SSR_PORT='13715'`, lancer `npm run build`, puis `node bootstrap/ssr/app.js` dans un autre terminal. Vite conserve 13714 par défaut en l’absence de cette variable. Après arrêt du serveur de test, retirer INERTIA_SSR_PORT de l’environnement de build et relancer npm run build pour régénérer le bundle standard. Lancer check:site, check-browser et check-privacy sur http://127.0.0.1:8002 pendant que les deux serveurs sont actifs. check-privacy vérifie le vrai HTML SSR, le JSON Inertia et les métadonnées en FR/EN, les médias privés par GET/HEAD et seize vues mobiles/desktop dans les deux thèmes. Les tests PHP couvrent aussi l’éditeur privé et la conservation des données. Les captures et rapports restent dans artifacts/.
 
 ### Parcours navigateur avec écritures isolées
 
