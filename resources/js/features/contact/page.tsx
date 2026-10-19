@@ -33,15 +33,17 @@ export function Contact({ locale }: { locale: Locale }) {
                                     : s.name}
                                 <ArrowUpRight size={19} />
                             </span>
-                            <strong>{s.label}</strong>
+                            {s.label !== s.name && <strong>{s.label}</strong>}
                         </a>
                     ))}
+                </aside>
+                <ContactForm locale={locale} />
+                <div className="contact-note">
                     <p className="contact-location">
                         {profile.location[locale]}
                     </p>
                     <p>{t("features_contact_page_06")}</p>
-                </aside>
-                <ContactForm locale={locale} />
+                </div>
             </section>
         </>
     );

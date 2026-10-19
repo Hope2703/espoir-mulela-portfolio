@@ -46,6 +46,11 @@ export function Home({ locale }: { locale: Locale }) {
                             {t("features_profile_home_06")} ·{" "}
                             {t("features_profile_home_07")}
                         </p>
+                    </div>
+                    <div className="hero-portrait">
+                        <Portrait locale={locale} priority />
+                    </div>
+                    <div className="hero-details">
                         <p className="hero-intro">
                             {profile.introduction[locale]}
                         </p>
@@ -57,9 +62,6 @@ export function Home({ locale }: { locale: Locale }) {
                                 {t("features_profile_home_09")}
                             </Action>
                         </div>
-                    </div>
-                    <div className="hero-portrait">
-                        <Portrait locale={locale} priority />
                     </div>
                 </div>
                 <div className="hero-baseline">

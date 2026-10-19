@@ -67,9 +67,12 @@ composer lint
 npm run build
 npm run check:site -- http://127.0.0.1:8000
 node scripts/check-browser.mjs http://127.0.0.1:8000
+node scripts/check-ux.mjs http://127.0.0.1:8000
 ```
 
 Le script navigateur utilise Chrome installé par défaut ; PLAYWRIGHT_CHANNEL peut sélectionner un autre canal installé. Il contrôle les largeurs 375, 390, 430, 768, 820, 1024 et 1440, clair/sombre, images, débordements, navigation, changement de langue, menu clavier et persistance du thème. --quick réduit les pages publiques et les largeurs testées (390/1440) ; --admin ajoute les modules privés, dont profil, éditeurs et médias contextuels. Il utilise E2E_ADMIN_EMAIL/E2E_ADMIN_PASSWORD, ou les valeurs ADMIN_EMAIL/ADMIN_PASSWORD du .env local ignoré. Ne pas utiliser un compte de production. Les scripts navigateur ne fonctionnent que sur localhost. Rapports et captures dans artifacts/, jamais public.
+
+`check-ux.mjs` complète ce contrôle par 192 combinaisons des six pages publiques, FR/EN et clair/sombre : 360×667, 375×812, 390×844, 430×932, 768×1024, 1024×768, 1280×800 et 1440×900. Il vérifie la position du portrait et du premier projet, le début du formulaire à 390 px, les liens publics avant les captures, l’absence de lien confidentiel et l’email du footer. Il ajoute deux hauteurs mobiles, le focus clavier, les boutons désactivés, une adresse longue injectée uniquement dans le DOM de test, reduced-motion et le SSR sans JavaScript. Les captures et le rapport sont dans `artifacts/ux-refinement/`. Il ne soumet aucun formulaire et ne crée aucun contenu. Utiliser une base locale dédiée ou une copie locale, avec MAIL_MAILER=array, pour les contrôles publics ; les visites peuvent y être comptabilisées.
 
 PHPUnit utilise SQLite en mémoire par défaut. Pour PostgreSQL, créer une base de test dédiée, puis définir DB_CONNECTION=pgsql, DB_DATABASE=espoir_portfolio_test et les autres DB_* avant php artisan test. RefreshDatabase réinitialise cette base : ne jamais viser la base de production. Les tests couvrent contenus et empreintes, traductions, publication, autorisations, CRUD, uploads, confidentialité FOMIN, contact/honeypot/throttle, visites, archivage/suppression, visibilité des compétences, migrations, SEO, Markdown et seed idempotent.
 

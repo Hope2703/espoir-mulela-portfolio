@@ -44,7 +44,7 @@ export function Footer({ locale }: { locale: Locale }) {
                     <p className="footer-contact-invite">
                         {t("components_layout_footer_02")}
                     </p>
-                    <SocialLinks />
+                    <SocialLinks showEmail />
                 </div>
             </div>
             <div className="footer-bottom">

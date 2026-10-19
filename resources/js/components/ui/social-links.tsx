@@ -43,7 +43,7 @@ export function SocialIcon({ name }: { name: string }) {
         </svg>
     );
 }
-export function SocialLinks() {
+export function SocialLinks({ showEmail = false }: { showEmail?: boolean }) {
     const t = useTranslations();
     const { profile } = usePortfolio();
     return (
@@ -54,13 +54,17 @@ export function SocialLinks() {
             {profile.socials.map((social) => (
                 <a
                     key={social.name}
-                    className={`social-link ${social.name === "WhatsApp" ? "is-primary" : ""}`}
+                    className="social-link"
                     href={social.href}
                     target={social.name === "Email" ? undefined : "_blank"}
                     rel={social.name === "Email" ? undefined : "noreferrer"}
                 >
                     <SocialIcon name={social.name} />
-                    <span>{social.name}</span>
+                    <span>
+                        {showEmail && social.name === "Email"
+                            ? social.label
+                            : social.name}
+                    </span>
                 </a>
             ))}
         </nav>

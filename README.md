@@ -35,6 +35,8 @@ npm run build
 
 Les contrôles HTTP et navigateur exigent un serveur Laravel et un SSR actifs. Les procédures exactes, PostgreSQL de test, MailHog, contrôles responsive et VPS sont dans [docs/deployment.md](docs/deployment.md). Voir aussi [architecture](docs/architecture.md) et [gestion du contenu](docs/content.md).
 
+Les ajustements UX publics conservent la composition existante : introductions plus courtes en hauteur, portrait avant la présentation longue sur mobile, coordonnées compactes avant le formulaire, email visible dans le footer et liens publics des projets avant les captures. `node scripts/check-ux.mjs http://127.0.0.1:8000` vérifie ces comportements en FR/EN, clair/sombre, sur huit dimensions, ainsi que le clavier, reduced-motion et le contenu SSR sans JavaScript. Les captures restent dans `artifacts/ux-refinement/`.
+
 Neuf projets réels sont disponibles, dont THE AGENCY DRC avec deux captures réelles et son site en ligne ; activités et publications sont initialement vides. Le seed est idempotent et préserve les modifications administratives. La capture FOMIN déjà neutralisée est conservée ; aucun lien interne ni nouveau média confidentiel n’est diffusé. Instagram reste désactivé tant que son adresse réelle n’est pas fournie.
 
 ## Dashboard au quotidien

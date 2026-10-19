@@ -190,10 +190,10 @@ p + p {
 .button svg {
     transition: transform 0.25s;
 }
-.button:hover {
+.button:not(:disabled):hover {
     transform: translateY(-3px);
 }
-.button:hover svg {
+.button:not(:disabled):hover svg {
     transform: translate(2px, -2px);
 }
 .button.secondary {
@@ -201,8 +201,11 @@ p + p {
     background: transparent;
     border-color: var(--border);
 }
-.button.secondary:hover {
+.button.secondary:not(:disabled):hover {
     background: var(--surface);
+}
+.button:not(:disabled):active {
+    transform: translateY(0);
 }
 .actions {
     display: flex;
@@ -388,14 +391,22 @@ p + p {
 .hero-layout {
     display: grid;
     grid-template-columns: 1.4fr 1fr;
-    gap: 34px;
+    grid-template-areas: "copy portrait" "details portrait";
+    gap: 0 34px;
     align-items: center;
     padding-top: 46px;
 }
 .hero-copy {
+    grid-area: copy;
+    align-self: end;
     position: relative;
     z-index: 2;
-    padding-block: 16px 24px;
+    padding-top: 16px;
+}
+.hero-details {
+    grid-area: details;
+    align-self: start;
+    padding-bottom: 24px;
 }
 .hero h1 {
     font-size: clamp(45px, 5vw, 74px);
@@ -425,6 +436,7 @@ p + p {
     margin-top: 30px;
 }
 .hero-portrait {
+    grid-area: portrait;
     align-self: stretch;
     min-height: 560px;
     padding: 18px 0 36px 8px;
@@ -853,13 +865,13 @@ p + p {
     min-height: 44px;
 }
 .page-heading {
-    padding-top: 85px;
-    padding-bottom: 60px;
+    padding-top: 48px;
+    padding-bottom: 36px;
     border-bottom: 1px solid var(--border);
 }
 .page-heading h1 {
     max-width: 1000px;
-    margin: 26px 0;
+    margin: 20px 0;
 }
 .page-heading .lead {
     max-width: 770px;
@@ -887,6 +899,7 @@ p + p {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 65px 30px;
+    padding-top: 28px;
     margin-bottom: 100px;
 }
 .index-project.featured:first-child {
@@ -963,6 +976,9 @@ p + p {
 .case-heading .lead {
     max-width: 780px;
 }
+.case-actions {
+    margin-top: 24px;
+}
 .case-media > .project-media {
     padding: 50px;
     max-height: 720px;
@@ -1020,7 +1036,7 @@ p + p {
     display: grid;
     grid-template-columns: 1fr 1.3fr;
     gap: 80px;
-    padding-top: 65px;
+    padding-top: 36px;
     align-items: center;
 }
 .about-intro .portrait {
@@ -1338,8 +1354,17 @@ p + p {
 .contact-layout {
     display: grid;
     grid-template-columns: 1fr 1.4fr;
-    gap: 110px;
-    margin-block: 65px 120px;
+    grid-template-rows: auto 1fr;
+    gap: 28px 110px;
+    margin-block: 36px 90px;
+    align-items: start;
+}
+.contact-layout .contact-form {
+    grid-column: 2;
+    grid-row: 1 / 3;
+}
+.contact-note {
+    grid-column: 1;
 }
 .contact-channel {
     display: block;
@@ -1362,10 +1387,9 @@ p + p {
     color: var(--accent);
 }
 .contact-location {
-    margin-top: 35px;
     color: var(--foreground);
 }
-.contact-layout aside > p:last-child {
+.contact-note > p:last-child {
     font-size: 15px;
     margin-top: 18px;
 }
@@ -1540,7 +1564,7 @@ p + p {
         display: none;
     }
     .hero-layout {
-        gap: 25px;
+        column-gap: 25px;
         grid-template-columns: 1.2fr 1fr;
     }
     .hero h1 {
@@ -1693,14 +1717,17 @@ p + p {
         padding-bottom: 16px;
     }
     .hero-layout {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
+        grid-template-columns: 1fr;
+        grid-template-areas: "copy" "portrait" "details";
+        gap: 18px;
         padding-top: 20px;
         align-items: stretch;
     }
     .hero-copy {
-        padding: 12px 0;
+        padding: 12px 0 0;
+    }
+    .hero-details {
+        padding-bottom: 12px;
     }
     .hero h1 {
         font-size: clamp(38px, 8.8vw, 62px);
@@ -1713,11 +1740,11 @@ p + p {
     .hero-fields {
         font-size: 12px;
         line-height: 1.8;
-        margin-top: 22px;
+        margin-top: 18px;
     }
     .hero-intro {
         font-size: 16px;
-        margin-top: 20px;
+        margin-top: 0;
         max-width: none;
     }
     .hero .actions {
@@ -1733,7 +1760,7 @@ p + p {
         flex: 1;
     }
     .hero-portrait {
-        padding: 18px 0 0;
+        padding: 0;
         min-height: 0;
         margin-left: 30px;
     }
@@ -1901,12 +1928,12 @@ p + p {
         flex-basis: 100%;
     }
     .page-heading {
-        padding-top: 45px;
-        padding-bottom: 40px;
+        padding-top: 28px;
+        padding-bottom: 28px;
     }
     .page-heading h1 {
         font-size: 44px;
-        margin-block: 20px;
+        margin-block: 16px;
     }
     .page-heading .lead {
         font-size: 18px;
@@ -1921,6 +1948,7 @@ p + p {
     }
     .project-index {
         display: block;
+        padding-top: 24px;
         margin-bottom: 65px;
     }
     .index-project + .index-project {
@@ -1974,8 +2002,8 @@ p + p {
     .about-intro {
         display: flex;
         flex-direction: column-reverse;
-        padding-top: 35px;
-        gap: 35px;
+        padding-top: 28px;
+        gap: 28px;
         align-items: stretch;
     }
     .about-intro .portrait {
@@ -2092,11 +2120,23 @@ p + p {
     }
     .contact-layout {
         grid-template-columns: 1fr;
-        gap: 45px;
-        margin-block: 35px 65px;
+        grid-template-rows: auto;
+        gap: 28px;
+        margin-block: 24px 65px;
+    }
+    .contact-layout .contact-form {
+        grid-column: auto;
+        grid-row: auto;
+    }
+    .contact-channel {
+        padding-block: 12px;
+    }
+    .contact-channel > span {
+        margin-bottom: 0;
+        min-height: 24px;
     }
     .contact-channel strong {
-        font-size: 20px;
+        font-size: 17px;
     }
     .form-row {
         grid-template-columns: 1fr;
@@ -2121,8 +2161,8 @@ p + p {
         transition-duration: 0.01ms !important;
     }
     .project-image-link:hover .capture-window img,
-    .button:hover,
-    .button:hover svg,
+    .button:not(:disabled):hover,
+    .button:not(:disabled):hover svg,
     .circle-link:hover {
         transform: none;
     }
@@ -2336,23 +2376,23 @@ p + p {
         animation-delay: 160ms;
     }
     .hero-fields {
-        animation: reading-rise var(--motion-ui) var(--motion-ease) 240ms
+        animation: reading-rise var(--motion-ui) var(--motion-ease) 180ms
             backwards;
     }
     .hero-intro {
-        animation: reading-rise var(--motion-ui) var(--motion-ease) 310ms
+        animation: reading-rise var(--motion-ui) var(--motion-ease) 240ms
             backwards;
     }
     .hero .actions {
-        animation: reading-rise var(--motion-ui) var(--motion-ease) 380ms
+        animation: reading-rise var(--motion-ui) var(--motion-ease) 320ms
             backwards;
     }
     .hero-portrait {
-        animation: reading-media var(--motion-media) var(--motion-ease) 460ms
+        animation: reading-media var(--motion-reveal) var(--motion-ease) 160ms
             backwards;
     }
     .hero-baseline {
-        animation: reading-line var(--motion-ui) var(--motion-ease) 620ms
+        animation: reading-line var(--motion-ui) var(--motion-ease) 420ms
             backwards;
     }
     .page-transition:not(:has(.hero)) {
@@ -2436,9 +2476,6 @@ p + p {
         animation: reading-rise var(--motion-reveal) var(--motion-ease)
             calc(var(--motion-stagger) * 3) backwards;
     }
-    [data-revealed="true"][data-sequence="contact"] .social-link.is-primary {
-        animation-delay: calc(var(--motion-stagger) * 2);
-    }
     [data-revealed="true"][data-sequence="footer"] .footer-grid {
         animation: reading-rise var(--motion-reveal) var(--motion-ease)
             backwards;
@@ -2453,11 +2490,10 @@ p + p {
     }
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-    .button:hover {
+    .button:not(:disabled):hover {
         transform: translateY(-2px);
     }
-    .button:hover svg,
-    .social-link.is-primary:hover svg {
+    .button:not(:disabled):hover svg {
         transform: translate(2px, -1px);
     }
     .social-link svg {
@@ -2644,13 +2680,15 @@ p + p {
 .social-link svg {
     flex-shrink: 0;
 }
+.social-link span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
 .social-link:hover {
     border-color: var(--accent);
 }
-.social-link.is-primary,
-.footer-grid .social-link.is-primary:hover {
-    background: var(--accent);
-    color: var(--accent-foreground);
+.social-link:active {
+    background: var(--surface);
     border-color: var(--accent);
 }
 .contact-band .social-links {
@@ -2663,6 +2701,9 @@ p + p {
 }
 .footer-grid .social-link {
     justify-content: flex-start;
+}
+.footer-grid .social-link[href^="mailto:"] {
+    grid-column: 1 / -1;
 }
 .footer-bottom {
     padding-top: 24px;
@@ -3293,38 +3334,6 @@ td button {
     }
     .nav-inner {
         animation-duration: 220ms;
-    }
-    .hero-name {
-        animation-duration: 300ms;
-        animation-delay: 100ms;
-    }
-    .hero h1 > span {
-        animation-duration: 480ms;
-        animation-delay: 200ms;
-    }
-    .hero h1 > span + span {
-        animation-duration: 500ms;
-        animation-delay: 300ms;
-    }
-    .hero-fields {
-        animation-duration: 350ms;
-        animation-delay: 450ms;
-    }
-    .hero-intro {
-        animation-duration: 350ms;
-        animation-delay: 550ms;
-    }
-    .hero .actions {
-        animation-duration: 300ms;
-        animation-delay: 650ms;
-    }
-    .hero-portrait {
-        animation-duration: 500ms;
-        animation-delay: 700ms;
-    }
-    .hero-baseline {
-        animation-duration: 300ms;
-        animation-delay: 900ms;
     }
     [data-revealed="true"][data-sequence="project"]
         :is(
