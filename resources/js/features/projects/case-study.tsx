@@ -1,7 +1,5 @@
 import { useTranslations } from "@/lib/translations";
 import { usePortfolio } from "@/lib/portfolio";
-const publicLinks = (p: Project) =>
-    p.links.filter((link) => link.enabled !== false);
 import { Reveal } from "@/components/motion/reveal";
 import Link from "@/components/ui/link";
 import { ArrowUpRight, ArrowLeft } from "lucide-react";
@@ -18,6 +16,9 @@ export function CaseStudy({
 }) {
     const t = useTranslations();
     const { projects } = usePortfolio();
+    const links = p.confidential
+        ? []
+        : p.links.filter((link) => link.enabled !== false);
     const fr = locale === "fr",
         next =
             projects[
@@ -33,6 +34,28 @@ export function CaseStudy({
                 <p className="eyebrow">{fr ? "Projet" : "Project"}</p>
                 <h1>{p.title[locale]}</h1>
                 <p className="lead">{p.shortDescription[locale]}</p>
+                {links.length > 0 && (
+                    <div className="actions case-actions">
+                        {links.map((link) => (
+                            <a
+                                className="button secondary"
+                                key={link.url}
+                                href={link.url}
+                                target="_blank"
+                                rel="noreferrer"
+                            >
+                                {t(
+                                    /^https?:\/\/(?:www\.)?github\.com\/[^/]+\/[^/?#]+/i.test(
+                                        link.url,
+                                    )
+                                        ? "features_projects_case-study_repository"
+                                        : "features_projects_case-study_06",
+                                )}
+                                <ArrowUpRight size={18} />
+                            </a>
+                        ))}
+                    </div>
+                )}
             </header>
             <Reveal kind="media" className="wrap case-media">
                 <ProjectMedia
@@ -54,18 +77,6 @@ export function CaseStudy({
                             <p>{p.role[locale]}</p>
                         </div>
                     )}
-                    {publicLinks(p).map((link) => (
-                        <a
-                            className="text-link"
-                            key={link.url}
-                            href={link.url}
-                            target="_blank"
-                            rel="noreferrer"
-                        >
-                            {t("features_projects_case-study_06")}
-                            <ArrowUpRight size={16} />
-                        </a>
-                    ))}
                 </aside>
                 <div className="case-story">
                     <Reveal as="section" sequence="timeline">

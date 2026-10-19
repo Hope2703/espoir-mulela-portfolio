@@ -14,7 +14,7 @@ export default defineConfig([
         ".local/**",
     ]),
     {
-        files: ["scripts/check-browser.mjs"],
+        files: ["scripts/check-browser.mjs", "scripts/check-ux.mjs"],
         languageOptions: { globals: globals.browser },
     },
     {
