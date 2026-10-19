@@ -16,6 +16,8 @@ Créer son administrateur avec php artisan admin:create ou, après configuration
 
 Enregistrer les deux traductions avant publication. Un contenu futur reste invisible jusqu’à sa date ; une archive ou suppression disparaît du public et du sitemap. Preview est privé. Les slugs de chaque langue doivent être uniques, y compris parmi les contenus supprimés, pour ne pas réattribuer accidentellement une ancienne adresse.
 
+Le lien public existant apparaît avant les captures sur la fiche projet. Il peut aussi recevoir l’URL d’un dépôt GitHub public : le libellé FR/EN devient alors « Consulter le dépôt GitHub » / « View GitHub repository ». Aucun dépôt n’est ajouté automatiquement et ce champ unique ne stocke pas simultanément site et dépôt. Les projets confidentiels restent sans lien public. La section « Le contexte du projet. » / « Project context. » présente les champs contexte et description existants ; aucune donnée éditoriale n’est réécrite.
+
 Le parcours et les compétences se modifient dans les modules dédiés. Une catégorie contenant des compétences ne peut pas être supprimée avant réaffectation ou suppression de ses enfants. Les paramètres administrent seulement nom complet, titre professionnel FR/EN, bio FR/EN, localisation FR/EN, SEO FR/EN, email et WhatsApp. L’accueil compose automatiquement le résumé à partir du parcours ; sa mise en page reste dans le code. Les compétences ont catégorie, nom, ordre et visibilité. Les données éditoriales ne doivent pas être recopiées dans les composants React.
 
 ## Médias
