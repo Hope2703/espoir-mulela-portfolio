@@ -74,7 +74,11 @@ class ContentPrivacyTest extends TestCase
         }
         $after = $experience->fresh()->getAttributes();
         foreach (['description', 'contributions', 'role', 'organization'] as $field) {
-            $this->assertSame($before[$field], $after[$field]);
+            if ($experience->hasCast($field, ['array', 'json'])) {
+                $this->assertJsonStringEqualsJsonString($before[$field], $after[$field], $field);
+            } else {
+                $this->assertSame($before[$field], $after[$field]);
+            }
         }
     }
 
