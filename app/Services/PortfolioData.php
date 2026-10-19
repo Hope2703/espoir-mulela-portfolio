@@ -27,7 +27,7 @@ class PortfolioData
             $second = preg_split('/\s+/u', ucfirst($parts[1] ?? ''), 2);
             $settings['hero_title'][$locale] = rtrim($parts[0], '.').".\n".implode("\n", $second).($parts[1] ?? '' ? '.' : '');
         }
-        $settings['journeyNotes'] = Education::orderByDesc('current')->orderBy('sort_order')->limit(1)->get()->map(fn ($e) => ['label' => ['fr' => 'Formation', 'en' => 'Education'], 'title' => $e->title, 'description' => $e->description, 'current' => $e->current])->concat(Experience::orderByDesc('current')->orderBy('sort_order')->limit(2)->get()->map(fn ($e) => ['label' => ['fr' => 'Expérience', 'en' => 'Experience'], 'title' => $e->role, 'description' => $e->description, 'current' => $e->current]))->all();
+        $settings['journeyNotes'] = Education::orderByDesc('current')->orderBy('sort_order')->limit(1)->get()->map(fn ($e) => ['label' => ['fr' => 'Formation', 'en' => 'Education'], 'title' => $e->title, 'description' => $e->description, 'current' => $e->current])->concat(Experience::orderByDesc('current')->orderBy('sort_order')->limit(2)->get()->map(fn ($e) => ['label' => ['fr' => 'Expérience', 'en' => 'Experience'], 'title' => $e->role, 'description' => $this->experience($e)['description'], 'current' => $e->current]))->all();
         $settings['socials'] = SocialLink::where('enabled', true)->orderBy('sort_order')->get()->map(fn ($s) => ['name' => $s->platform, 'label' => match ($s->platform) {
             'Email' => substr($s->url, 7), 'WhatsApp' => '+'.substr($s->url, strlen('https://wa.me/')), default => $s->platform
         }, 'href' => $s->url])->all();
@@ -39,10 +39,23 @@ class PortfolioData
     {
         $empty = ['fr' => '', 'en' => ''];
 
+        if ($p->confidential) {
+            $title = $description = [];
+            foreach (['fr', 'en'] as $locale) {
+                $title[$locale] = __('portfolio.confidential_project_title', [], $locale);
+                $description[$locale] = __('portfolio.confidential_project_description', [], $locale);
+            }
+
+            return ['id' => 'confidential-'.$p->id, 'slug' => $p->translated('slug'), 'slugs' => $p->slug,
+                'title' => $title, 'shortDescription' => $description, 'description' => $description,
+                'context' => $empty, 'role' => null, 'html' => ['fr' => $this->markdown($description['fr']), 'en' => $this->markdown($description['en'])],
+                'featured' => $p->featured, 'confidential' => true, 'media' => [], 'links' => []];
+        }
+
         return ['id' => $p->content_key ?? (string) $p->id, 'databaseId' => $p->id, 'slug' => $p->translated('slug'), 'slugs' => $p->slug,
             'title' => $p->title, 'shortDescription' => $p->excerpt ?? $empty, 'description' => $p->description ?? $empty,
             'context' => $p->context ?? $empty, 'role' => $p->role, 'html' => ['fr' => $this->markdown($p->description['fr'] ?? ''), 'en' => $this->markdown($p->description['en'] ?? '')], 'featured' => $p->featured, 'confidential' => $p->confidential,
-            'media' => ($p->confidential ? $p->media->where('public_safe', true) : $p->media)->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt, 'width' => $m->width, 'height' => $m->height, 'kind' => 'screenshot'])->values()->all(),
+            'media' => $p->media->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt, 'width' => $m->width, 'height' => $m->height, 'kind' => 'screenshot'])->values()->all(),
             'links' => $p->confidential ? [] : array_values(array_filter([
                 $p->external_url ? ['type' => 'official', 'url' => $p->external_url] : null,
             ]))];
@@ -55,9 +68,27 @@ class PortfolioData
 
     public function journey(): array
     {
-        return ['experiences' => Experience::orderBy('sort_order')->get()->toArray(), 'education' => Education::orderBy('sort_order')->get()->toArray(),
+        return ['experiences' => Experience::orderBy('sort_order')->get()->map(fn ($e) => $this->experience($e))->all(), 'education' => Education::orderBy('sort_order')->get()->toArray(),
             'certifications' => Certification::orderBy('sort_order')->get()->map(fn ($c) => ['organization' => $c->organization, 'title' => $c->translated('title'), 'detail' => $c->description])->all(),
             'skills' => SkillCategory::with(['skills' => fn ($q) => $q->where('visible', true)->orderBy('sort_order')])->orderBy('sort_order')->get()->map(fn ($c) => ['title' => $c->title, 'description' => $c->description, 'tools' => $c->skills->pluck('name')])->all()];
+    }
+
+    private function experience(Experience $experience): array
+    {
+        $description = $experience->description;
+        if ($experience->hasConfidentialDetails()) {
+            $description = [];
+            foreach (['fr', 'en'] as $locale) {
+                $description[$locale] = $experience->public_description[$locale] ?? __('portfolio.confidential_experience_description', [], $locale);
+                if (blank($description[$locale])) {
+                    $description[$locale] = __('portfolio.confidential_experience_description', [], $locale);
+                }
+            }
+        }
+
+        return ['organization' => $experience->organization, 'role' => $experience->role, 'period' => $experience->period,
+            'current' => $experience->current, 'description' => $description,
+            'contributions' => $experience->hasConfidentialDetails() ? [] : ($experience->contributions ?? [])];
     }
 
     public function publication(Publication $p): array
@@ -70,7 +101,9 @@ class PortfolioData
     public function activity(Activity $a): array
     {
         return ['id' => (string) $a->id, 'slug' => $a->translated('slug'), 'slugs' => $a->slug, 'title' => $a->title,
-            'description' => $a->summary, 'body' => $a->description, 'type' => ['fr' => $a->type, 'en' => $a->type], 'role' => $a->role, 'location' => $a->location,
+            'description' => $a->summary, 'body' => $a->description, 'type' => in_array(mb_strtolower(trim($a->type)), ['formation', 'training'], true)
+                ? ['fr' => __('portfolio.activity_type_training', [], 'fr'), 'en' => __('portfolio.activity_type_training', [], 'en')]
+                : ['fr' => $a->type, 'en' => $a->type], 'role' => $a->role, 'location' => $a->location,
             'html' => ['fr' => $this->markdown($a->description['fr'] ?? ''), 'en' => $this->markdown($a->description['en'] ?? '')],
             'date' => $a->event_date?->toDateString(), 'externalUrl' => $a->external_url, 'status' => $a->status,
             'media' => $a->media->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt])->all()];

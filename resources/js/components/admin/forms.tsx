@@ -24,6 +24,8 @@ export const labels: Record<string, string> = {
     organization: "Organisation",
     role: "Rôle",
     description: "Description",
+    public_description: "Responsabilités publiques",
+    confidential: "Détails confidentiels",
     title: "Titre",
     slug: "Slug",
     excerpt: "Résumé",

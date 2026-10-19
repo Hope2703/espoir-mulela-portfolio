@@ -200,4 +200,7 @@ return [
     'desktop' => 'Desktop',
     'mobile' => 'Mobile',
     'other' => 'Other',
+    'Détails confidentiels' => 'Confidential details',
+    'Responsabilités publiques' => 'Public responsibilities',
+    'Une expérience confidentielle conserve son organisation, son rôle et sa période. Seules les responsabilités publiques bilingues sont affichées ; description et contributions restent privées.' => 'A confidential experience retains its organisation, role and period. Only the bilingual public responsibilities are shown; its description and contributions remain private.',
 ];

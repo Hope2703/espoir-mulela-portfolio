@@ -30,7 +30,7 @@ class RecordController extends Controller
     private function fields(Request $r): array
     {
         return match ($this->module($r)) {
-            'experiences' => ['organization' => 'text', 'role' => 'translated', 'description' => 'translated', 'contributions' => 'contributions', 'period' => 'text', 'started_at' => 'date', 'ended_at' => 'date', 'current' => 'boolean', 'sort_order' => 'number'],
+            'experiences' => ['organization' => 'text', 'role' => 'translated', 'description' => 'translated', 'contributions' => 'contributions', 'confidential' => 'boolean', 'public_description' => 'optional-translated', 'period' => 'text', 'started_at' => 'date', 'ended_at' => 'date', 'current' => 'boolean', 'sort_order' => 'number'],
             'education' => ['organization' => 'text', 'title' => 'translated', 'description' => 'translated', 'period' => 'text', 'started_at' => 'date', 'ended_at' => 'date', 'current' => 'boolean', 'sort_order' => 'number'],
             'certifications' => ['organization' => 'text', 'title' => 'translated', 'description' => 'translated', 'sort_order' => 'number'],
             'skill-categories' => ['title' => 'translated', 'description' => 'translated', 'sort_order' => 'number'],
@@ -44,7 +44,7 @@ class RecordController extends Controller
         $rules = [];
         foreach ($this->fields($r) as $field => $type) {
             $rules[$field] = match ($type) {
-                'translated' => 'required|array:fr,en', 'number' => 'required|integer|min:0|max:100000', 'boolean' => 'required|boolean',
+                'translated' => 'required|array:fr,en', 'optional-translated' => 'nullable|array:fr,en', 'number' => 'required|integer|min:0|max:100000', 'boolean' => 'required|boolean',
                 'date' => 'nullable|date', 'category' => 'required|integer|exists:skill_categories,id', 'contributions' => 'nullable|array|max:30',
                 'platform' => ['required', Rule::in(['WhatsApp', 'LinkedIn', 'Instagram', 'Email', 'GitHub']), Rule::unique('social_links', 'platform')->ignore($r->route('id'))],
                 'url' => 'nullable|string|max:2048', default => ($field === 'period' ? 'nullable' : 'required').'|string|max:250',
@@ -54,6 +54,14 @@ class RecordController extends Controller
                     $rules[$field.'.'.$l] = 'required|string|max:20000';
                 }
             }
+            if ($type === 'optional-translated') {
+                foreach (['fr', 'en'] as $l) {
+                    $rules[$field.'.'.$l] = 'nullable|string|max:20000';
+                }
+            }
+        }
+        if ($this->module($r) === 'experiences') {
+            $rules['confidential'] = 'sometimes|boolean';
         }
         if (array_key_exists('contributions', $rules)) {
             $rules['contributions.*'] = 'array:fr,en';
@@ -84,6 +92,12 @@ class RecordController extends Controller
 
     private function editor(Request $r, $item = null)
     {
+        if ($item instanceof Experience) {
+            $props = $item->toArray();
+            $props['confidential'] = $item->hasConfidentialDetails();
+            $item = $props;
+        }
+
         return Inertia::render('admin/record-edit', ['module' => $this->module($r), 'fields' => $this->fields($r), 'item' => $item, 'categories' => SkillCategory::orderBy('sort_order')->get(['id', 'title'])]);
     }
 
@@ -100,6 +114,9 @@ class RecordController extends Controller
     private function save(Request $r, ?int $id = null)
     {
         $data = $r->validate($this->rules($r));
+        if ($this->module($r) === 'experiences' && collect($data['public_description'] ?? [])->contains(fn ($value) => filled($value))) {
+            $r->validate(['public_description.fr' => 'required|string|max:20000', 'public_description.en' => 'required|string|max:20000']);
+        }
         if ($this->module($r) === 'social-links') {
             $url = $data['url'] ?? '';
             $platform = $data['platform'];

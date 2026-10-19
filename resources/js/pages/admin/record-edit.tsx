@@ -28,7 +28,7 @@ export default function Page({ module, fields, item, categories }: Props) {
     for (const [k, t] of Object.entries(fields))
         initial[k] =
             item?.[k] ??
-            (t === "translated"
+            (t === "translated" || t === "optional-translated"
                 ? { fr: "", en: "" }
                 : t === "boolean"
                   ? k === "visible"
@@ -145,13 +145,19 @@ export default function Page({ module, fields, item, categories }: Props) {
                                     );
                                 }}
                             />
-                        ) : type === "translated" ? (
+                        ) : type === "translated" ||
+                          type === "optional-translated" ? (
                             <Field
                                 key={key}
                                 name={key + "." + locale}
                                 label={labels[key] + " (" + locale + ")"}
-                                area={key === "description"}
-                                value={(form.data[key] as Localized)[locale]}
+                                area={
+                                    key === "description" ||
+                                    key === "public_description"
+                                }
+                                value={
+                                    (form.data[key] as Localized)[locale] ?? ""
+                                }
                                 error={errors[key + "." + locale]}
                                 onChange={(v) =>
                                     form.setData(key, {
@@ -183,6 +189,13 @@ export default function Page({ module, fields, item, categories }: Props) {
                         ),
                     )}
                 </EditorSection>
+                {module === "experiences" && (
+                    <p className="admin-help">
+                        {a(
+                            "Une expérience confidentielle conserve son organisation, son rôle et sa période. Seules les responsabilités publiques bilingues sont affichées ; description et contributions restent privées.",
+                        )}
+                    </p>
+                )}
                 <div className="admin-form-actions">
                     <Button type="submit" disabled={form.processing}>
                         {a("Enregistrer ↗")}
