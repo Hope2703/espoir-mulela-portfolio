@@ -18,9 +18,16 @@ type Props = {
     module: string;
     fields: Record<string, string>;
     item: (Data & { id: number }) | null;
+    lockedFields: string[];
     categories: { id: number; title: Localized }[];
 };
-export default function Page({ module, fields, item, categories }: Props) {
+export default function Page({
+    module,
+    fields,
+    item,
+    lockedFields,
+    categories,
+}: Props) {
     const a = useAdminTranslation();
 
     const [locale, setLocale] = useState<"fr" | "en">("fr");
@@ -63,6 +70,7 @@ export default function Page({ module, fields, item, categories }: Props) {
                             <Checkbox
                                 key={key}
                                 checked={Boolean(form.data[key])}
+                                disabled={lockedFields.includes(key)}
                                 onChange={(e) =>
                                     form.setData(key, e.target.checked)
                                 }
@@ -158,6 +166,7 @@ export default function Page({ module, fields, item, categories }: Props) {
                                 value={
                                     (form.data[key] as Localized)[locale] ?? ""
                                 }
+                                readOnly={lockedFields.includes(key)}
                                 error={errors[key + "." + locale]}
                                 onChange={(v) =>
                                     form.setData(key, {
@@ -171,6 +180,7 @@ export default function Page({ module, fields, item, categories }: Props) {
                                 key={key}
                                 name={key}
                                 value={String(form.data[key] ?? "")}
+                                readOnly={lockedFields.includes(key)}
                                 type={
                                     type === "number"
                                         ? "number"
@@ -192,7 +202,9 @@ export default function Page({ module, fields, item, categories }: Props) {
                 {module === "experiences" && (
                     <p className="admin-help">
                         {a(
-                            "Une expérience confidentielle conserve son organisation, son rôle et sa période. Seules les responsabilités publiques bilingues sont affichées ; description et contributions restent privées.",
+                            lockedFields.length > 0
+                                ? "Cette expérience utilise la présentation publique approuvée. La confidentialité et ces champs sont verrouillés."
+                                : "Une expérience confidentielle conserve son organisation, son rôle et sa période. Seules les responsabilités publiques bilingues sont affichées ; description et contributions restent privées.",
                         )}
                     </p>
                 )}

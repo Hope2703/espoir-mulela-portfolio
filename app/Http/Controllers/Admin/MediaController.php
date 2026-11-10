@@ -19,7 +19,11 @@ class MediaController extends Controller
 {
     public function index(Request $request)
     {
-        return Inertia::render('admin/media', ['projects' => Project::with('media')->orderBy('sort_order')->get(['id', 'title', 'confidential']), 'activities' => Activity::with('media')->get(['id', 'title']), 'publications' => Publication::get(['id', 'title', 'cover']), 'selection' => ['type' => in_array($request->query('owner_type'), ['project', 'activity', 'publication', 'portrait']) ? $request->query('owner_type') : 'project', 'id' => (int) $request->query('owner_id')]]);
+        $projects = Project::with('media')->orderBy('sort_order')->get(['id', 'title', 'confidential', 'content_key', 'slug'])->map(fn (Project $project) => [
+            'id' => $project->id, 'title' => $project->title, 'confidential' => $project->hasConfidentialDetails(), 'media' => $project->media,
+        ]);
+
+        return Inertia::render('admin/media', ['projects' => $projects, 'activities' => Activity::with('media')->get(['id', 'title']), 'publications' => Publication::get(['id', 'title', 'cover']), 'selection' => ['type' => in_array($request->query('owner_type'), ['project', 'activity', 'publication', 'portrait']) ? $request->query('owner_type') : 'project', 'id' => (int) $request->query('owner_id')]]);
     }
 
     public function store(Request $r)
@@ -32,7 +36,7 @@ class MediaController extends Controller
             'project' => Project::class,'activity' => Activity::class,'publication' => Publication::class,default => null
         };
         $owner = $model ? $model::findOrFail($valid['owner_id']) : null;
-        if ($kind === 'project' && $owner->confidential) {
+        if ($kind === 'project' && $owner->hasConfidentialDetails()) {
             throw ValidationException::withMessages(['owner_id' => __('admin.Aucun média public pour un projet confidentiel.')]);
         }
         $image = $r->file('file');

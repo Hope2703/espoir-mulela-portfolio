@@ -15,7 +15,11 @@ if (getenv('E2E_DISPOSABLE') !== 'true') {
 }
 
 $root = dirname(__DIR__, 2);
-$qaDirectory = $root.'/artifacts/privacy-qa';
+$fixture = getenv('E2E_FIXTURE_NAME') ?: 'privacy-qa';
+if (! preg_match('/\A[a-z0-9]+(?:-[a-z0-9]+)*\z/', $fixture)) {
+    throw new RuntimeException('Use a simple directory name for E2E_FIXTURE_NAME.');
+}
+$qaDirectory = $root.'/artifacts/'.$fixture;
 $database = $qaDirectory.'/portfolio.sqlite';
 $bootstrap = PHP_SAPI === 'cli' && ($argv[1] ?? '') === 'bootstrap';
 if ($bootstrap) {
@@ -48,12 +52,14 @@ if ($bootstrap) {
         $project->$field = ['fr' => 'PRIVATE-QA-'.$field.'-FR', 'en' => 'PRIVATE-QA-'.$field.'-EN'];
     }
     $project->content_key = 'PRIVATE-QA-CONTENT-KEY';
+    $project->confidential = false;
     $project->external_url = 'https://private-qa.example.test';
     $project->save();
     Storage::disk('public')->put('uploads/project/private-qa.txt', 'PRIVATE-QA-FILE');
+    Storage::disk('public')->put('images/projects/fomin/fomin-dashboard.png', 'PRIVATE-QA-LEGACY-FILE');
     $project->media()->create(['path' => 'uploads/project/private-qa.txt', 'alt' => ['fr' => 'PRIVATE-QA-ALT-FR', 'en' => 'PRIVATE-QA-ALT-EN'], 'public_safe' => true, 'type' => 'cover', 'width' => 200, 'height' => 200, 'sort_order' => 99]);
-    Experience::where('organization', 'Taprinella Logistic SARL')->firstOrFail()->update(['current' => true, 'description' => ['fr' => 'PRIVATE-QA-EXPERIENCE-FR', 'en' => 'PRIVATE-QA-EXPERIENCE-EN'], 'contributions' => [['fr' => 'PRIVATE-QA-CONTRIBUTION-FR', 'en' => 'PRIVATE-QA-CONTRIBUTION-EN']]]);
-    echo "Disposable privacy fixture ready in artifacts/privacy-qa. No daily data changed.\n";
+    Experience::where('organization', 'Taprinella Logistic SARL')->firstOrFail()->update(['current' => true, 'confidential' => false, 'public_description' => ['fr' => 'PRIVATE-QA-OVERRIDE-FR', 'en' => 'PRIVATE-QA-OVERRIDE-EN'], 'description' => ['fr' => 'PRIVATE-QA-EXPERIENCE-FR', 'en' => 'PRIVATE-QA-EXPERIENCE-EN'], 'contributions' => [['fr' => 'PRIVATE-QA-CONTRIBUTION-FR', 'en' => 'PRIVATE-QA-CONTRIBUTION-EN']]]);
+    echo "Disposable privacy fixture ready in artifacts/{$fixture}. No daily data changed.\n";
 
     return;
 }

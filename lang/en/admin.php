@@ -202,5 +202,6 @@ return [
     'other' => 'Other',
     'Détails confidentiels' => 'Confidential details',
     'Responsabilités publiques' => 'Public responsibilities',
+    'Cette expérience utilise la présentation publique approuvée. La confidentialité et ces champs sont verrouillés.' => 'This experience uses the approved public description. Its privacy setting and these fields are locked.',
     'Une expérience confidentielle conserve son organisation, son rôle et sa période. Seules les responsabilités publiques bilingues sont affichées ; description et contributions restent privées.' => 'A confidential experience retains its organisation, role and period. Only the bilingual public responsibilities are shown; its description and contributions remain private.',
 ];

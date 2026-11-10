@@ -136,6 +136,7 @@ export default function Page({
                             </Checkbox>
                             <Checkbox
                                 checked={Boolean(form.data.confidential)}
+                                disabled={Boolean(item?.confidentiality_locked)}
                                 onChange={(e) =>
                                     form.setData(
                                         "confidential",

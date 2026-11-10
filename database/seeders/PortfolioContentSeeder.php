@@ -9,6 +9,7 @@ use App\Models\Project;
 use App\Models\SiteSetting;
 use App\Models\SkillCategory;
 use App\Models\SocialLink;
+use App\Services\PortfolioEditorial;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -17,8 +18,10 @@ class PortfolioContentSeeder extends Seeder
 {
     public function run(): void
     {
-        $data = json_decode(file_get_contents(__DIR__.'/data/portfolio.json'), true, flags: JSON_THROW_ON_ERROR);
-        DB::transaction(function () use ($data) {
+        $editorial = app(PortfolioEditorial::class);
+        $data = $editorial->source();
+        $activities = $editorial->activityAttributes($data);
+        DB::transaction(function () use ($data, $activities, $editorial) {
             foreach ($data['projects'] as $order => $p) {
                 if (Project::withTrashed()->where('content_key', $p['id'])->exists()) {
                     continue;
@@ -32,15 +35,13 @@ class PortfolioContentSeeder extends Seeder
                     'external_url' => $links->firstWhere('type', 'official')['url'] ?? null,
                 ]);
                 foreach ($p['media'] as $i => $m) {
-                    $safe = $p['id'] === 'institutionnel' && $m['src'] === '/images/projects/fomin/fomin-dashboard.png'
-                        && hash_file('sha256', public_path(ltrim($m['src'], '/'))) === '81fa8730c19457b68d4a757f7bb434084f4ad439edcc6fcc9e63e56fdb15e325';
-                    if ($p['confidential'] && ! $safe) {
+                    if ($p['confidential']) {
                         continue;
                     }
                     $path = ltrim($m['src'], '/');
                     Storage::disk('public')->put($path, file_get_contents(public_path($path)));
                     $project->media()->create(['type' => $m['type'] ?? ($i === 0 ? 'cover' : ($p['id'] === 'maliyaflow' ? 'mobile' : 'desktop')), 'path' => $path,
-                        'alt' => $m['alt'], 'width' => $m['width'], 'height' => $m['height'], 'sort_order' => $i, 'public_safe' => $safe]);
+                        'alt' => $m['alt'], 'width' => $m['width'], 'height' => $m['height'], 'sort_order' => $i]);
                 }
             }
             foreach (['experiences' => Experience::class, 'education' => Education::class, 'certifications' => Certification::class] as $key => $model) {
@@ -56,6 +57,7 @@ class PortfolioContentSeeder extends Seeder
                     $model::create($row + ['sort_order' => $i] + ($key === 'certifications' ? [] : ['current' => $key === 'education' && $row['organization'] === 'Kadea Academy']));
                 }
             }
+            $editorial->syncActivities($activities);
             foreach ($data['skills'] as $i => $s) {
                 if (SkillCategory::where('title->fr', $s['title']['fr'])->exists()) {
                     continue;
