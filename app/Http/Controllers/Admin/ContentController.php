@@ -54,6 +54,10 @@ class ContentController extends Controller
 
         $props = $item->toArray();
         $props['published_at'] = $item->published_at?->timezone(config('app.timezone'))->format('Y-m-d\TH:i');
+        if ($item instanceof Project) {
+            $props['confidential'] = $item->hasConfidentialDetails();
+            $props['confidentiality_locked'] = $item->isInstitutional();
+        }
 
         return Inertia::render('admin/content-edit', ['contentType' => $this->type($r), 'item' => $props]);
     }

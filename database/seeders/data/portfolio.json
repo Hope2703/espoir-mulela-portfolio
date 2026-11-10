@@ -84,19 +84,14 @@
         "en": "Software Developer"
       },
       "description": {
-        "fr": "Contribution au développement du logiciel de gestion de la redevance minière du FOMIN, dans le cadre de mon travail chez Taprinella Logistic.",
-        "en": "Contributing to FOMIN’s mining royalty management software as part of my work at Taprinella Logistic."
+        "fr": "Participation au développement et à l’évolution de solutions logicielles métier, dans un environnement professionnel exigeant en matière de qualité, de rigueur technique et de confidentialité.",
+        "en": "Contributing to the development and evolution of business software solutions in a professional environment emphasizing technical quality, reliability, and confidentiality."
       },
-      "contributions": [
-        {
-          "fr": "FOMIN : développement et maintenance d’un logiciel métier existant de gestion de la redevance minière.",
-          "en": "FOMIN: development and maintenance of existing mining royalty management software."
-        },
-        {
-          "fr": "Déploiement, administration technique et collaboration avec les équipes réseau et IT.",
-          "en": "Deployment, technical administration and collaboration with network and IT teams."
-        }
-      ]
+      "public_description": {
+        "fr": "Participation au développement et à l’évolution de solutions logicielles métier, dans un environnement professionnel exigeant en matière de qualité, de rigueur technique et de confidentialité.",
+        "en": "Contributing to the development and evolution of business software solutions in a professional environment emphasizing technical quality, reliability, and confidentiality."
+      },
+      "contributions": []
     },
     {
       "organization": "Ministère des Finances — RDC",
@@ -121,24 +116,24 @@
       "organization": "Université Protestante au Congo — UPC",
       "period": "2021–2025",
       "title": {
-        "fr": "Licence — parcours en ingénierie logicielle",
-        "en": "Bachelor’s degree — software engineering studies"
+        "fr": "Licence (Bac+4) — Ingénierie logicielle",
+        "en": "Licence (Bac+4) — Software Engineering"
       },
       "description": {
-        "fr": "Diplôme obtenu avec la mention Bien. Une base en algorithmique, programmation, conception logicielle, bases de données et développement web.",
-        "en": "Degree awarded with the distinction “Bien”. A foundation in algorithms, programming, software design, databases and web development."
+        "fr": "Diplôme obtenu avec la mention Bien. Formation universitaire en algorithmique, programmation, conception et architecture logicielle, bases de données et développement d'applications.",
+        "en": "Four-year university programme completed with the distinction “Bien”, covering algorithms, programming, software design, databases, and application development."
       }
     },
     {
       "organization": "Kadea Academy",
       "period": "2026",
       "title": {
-        "fr": "Formation en développement en intelligence artificielle",
-        "en": "Artificial Intelligence development programme"
+        "fr": "Formation en développement d'intelligence artificielle",
+        "en": "Artificial Intelligence Development Programme"
       },
       "description": {
-        "fr": "Spécialisation en cours dans la continuité de mon parcours logiciel. Le travail actuel porte sur Python, la programmation, la logique et les fondamentaux algorithmiques nécessaires à la suite du programme.",
-        "en": "An ongoing specialisation extending my software engineering background. Current work focuses on Python, programming, logic and the algorithmic foundations needed for the next stages."
+        "fr": "Spécialisation en cours chez Kadea Academy, dans la continuité de mon parcours en ingénierie logicielle. Après les fondamentaux de Python, de l'algorithmique et du développement d'API, mes apprentissages portent désormais sur les pipelines ETL, le traitement des données avec Pandas, la modélisation relationnelle, SQL et PostgreSQL. Des projets comme ForexAnalytics me permettent d'appliquer ces concepts dans des situations concrètes.",
+        "en": "My AI Developer training at Kadea Academy builds on my software engineering background. After strengthening my skills in Python, algorithms, object-oriented programming, and API development, I am now working with ETL pipelines, SQL, PostgreSQL, Pandas, and Flask. Through projects such as ForexAnalytics, I explore data extraction, transformation, and API integration. Machine Learning, Deep Learning, and NLP are upcoming stages of my training."
       }
     },
     {
@@ -153,13 +148,37 @@
       }
     }
   ],
+  "activities": [
+    {
+      "education_organization": "Kadea Academy",
+      "slug": {
+        "fr": "formation-developpeur-ia-kadea-academy",
+        "en": "ai-developer-training-kadea-academy"
+      },
+      "type": "Formation",
+      "event_date": "2026-07-05",
+      "status": "published",
+      "role": {
+        "fr": "Apprenant — Développeur IA",
+        "en": "Learner — AI Developer"
+      },
+      "location": {
+        "fr": "Kinshasa, République démocratique du Congo",
+        "en": "Kinshasa, Democratic Republic of the Congo"
+      },
+      "description": {
+        "fr": "Cette formation s’inscrit dans la continuité de mon parcours en ingénierie logicielle.\n\n## Travaux actuels\n\nAprès avoir approfondi Python, la programmation orientée objet, l’algorithmique et le développement d’API, je travaille sur les pipelines ETL (extraction, transformation et chargement), le traitement des données avec Pandas et la modélisation relationnelle avec SQL et PostgreSQL. J’aborde également l’intégration d’API externes et le développement backend avec Flask.\n\n### ForexAnalytics\n\nCe projet pratique me permet d’appliquer ces notions à l’extraction et à la transformation de données ainsi qu’à l’intégration d’API.\n\n## Prochaines étapes\n\nLe Machine Learning, le Deep Learning et le traitement du langage naturel (NLP) font partie des prochaines étapes du parcours.",
+        "en": "This programme builds on my software engineering background.\n\n## Current work\n\nAfter strengthening my skills in Python, object-oriented programming, algorithms, and API development, I am working on ETL pipelines (extract, transform, load), data processing with Pandas, and relational modelling with SQL and PostgreSQL. I am also exploring external API integration and backend development with Flask.\n\n### ForexAnalytics\n\nThis practical project lets me apply these concepts to data extraction, transformation, and API integration.\n\n## Upcoming stages\n\nMachine Learning, Deep Learning, and Natural Language Processing (NLP) are upcoming stages of the programme."
+      }
+    }
+  ],
   "certifications": [
     {
       "organization": "Duolingo",
       "title": "Duolingo English Test",
       "detail": {
-        "fr": "110 / 160 · niveau B2",
-        "en": "110 / 160 · B2 level"
+        "fr": "Score 110/160 · Niveau B2",
+        "en": "Score 110/160 · B2 level"
       }
     },
     {
@@ -226,12 +245,17 @@
         "en": "AI & Data"
       },
       "description": {
-        "fr": "Une spécialisation en cours chez Kadea Academy, centrée actuellement sur Python et les bases de la programmation.",
-        "en": "A direction of specialisation supported by my current training at Kadea Academy."
+        "fr": "Chez Kadea Academy, je travaille sur les pipelines ETL, le traitement de données et l’intégration d’API. ForexAnalytics est un projet pratique de cette formation en cours.",
+        "en": "At Kadea Academy, I am working on ETL pipelines, data processing, and API integration. ForexAnalytics is a practical project in this ongoing training programme."
       },
       "tools": [
         "Python",
-        "Algorithmique / Algorithms"
+        "Algorithmique / Algorithms",
+        "ETL",
+        "Pandas",
+        "SQL",
+        "PostgreSQL",
+        "Flask"
       ]
     }
   ],
@@ -445,38 +469,22 @@
       "id": "institutionnel",
       "slug": "projet-institutionnel",
       "title": {
-        "fr": "FOMIN",
-        "en": "FOMIN"
+        "fr": "Projet institutionnel confidentiel",
+        "en": "Confidential Institutional Project"
       },
       "shortDescription": {
-        "fr": "Contribuer à un logiciel de gestion de la redevance minière, chez Taprinella Logistic.",
-        "en": "Contributing to mining royalty management software at Taprinella Logistic."
+        "fr": "Développement d'une application métier",
+        "en": "Business Application Development"
       },
       "description": {
-        "fr": "Dans le cadre de mon expérience chez Taprinella Logistic, j’ai contribué au développement et à l’évolution du logiciel de gestion de la redevance minière du FOMIN.\n\n## Développement et maintenance\n\nFaire évoluer une application existante demande de comprendre ses règles métier, de maintenir ses fonctionnalités et de corriger les anomalies dans un cadre professionnel.\n\n## Confidentialité\n\nCertains détails techniques et opérationnels ne sont pas présentés pour des raisons de confidentialité.",
-        "en": "Participation in the development and evolution of FOMIN’s mining royalty management software as part of my work at Taprinella Logistic.\n\n## Development and maintenance\n\nEvolving existing software requires understanding its business rules, maintaining its features and fixing issues in a professional setting.\n\n## Confidentiality\n\nSome technical and operational details are omitted for confidentiality."
+        "fr": "Contribution au développement d'une solution logicielle dans un contexte professionnel. Les informations relatives au client, aux fonctionnalités spécifiques et à l'environnement technique ne sont pas divulguées pour des raisons de confidentialité.",
+        "en": "Contribution to the development of a business software solution in a professional setting. Client information, specific features, and technical environment details are not publicly disclosed due to confidentiality obligations."
       },
       "context": {
-        "fr": "Un logiciel métier existant, utilisé dans un contexte institutionnel lié à la redevance minière.",
-        "en": "Existing business software used in an institutional context involving mining royalties."
+        "fr": "",
+        "en": ""
       },
-      "role": {
-        "fr": "Ingénieur / développeur chez Taprinella Logistic — contribution au projet FOMIN.",
-        "en": "Engineer / developer at Taprinella Logistic — contribution to the FOMIN project."
-      },
-      "media": [
-        {
-          "src": "/images/projects/fomin/fomin-dashboard.png",
-          "alt": {
-            "fr": "Tableau de bord du logiciel de gestion de la redevance minière du FOMIN",
-            "en": "FOMIN mining royalty management dashboard"
-          },
-          "width": 1672,
-          "height": 941,
-          "kind": "screenshot",
-          "type": "cover"
-        }
-      ],
+      "media": [],
       "links": [],
       "featured": true,
       "confidential": true

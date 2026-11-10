@@ -114,6 +114,6 @@ class SimplificationTest extends TestCase
         $this->assertSame("Texte initial\n\n## Solution\n\nTexte réel conservé", $project->fresh()->description['fr']);
         $this->assertSame("Original text\n\n## Solution\n\nPreserved real text", $project->fresh()->description['en']);
         $this->assertDatabaseCount('projects', 9);
-        $this->assertDatabaseCount('project_media', 14);
+        $this->assertDatabaseCount('project_media', 13);
     }
 }

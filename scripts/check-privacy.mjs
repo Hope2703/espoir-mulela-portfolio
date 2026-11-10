@@ -4,6 +4,13 @@ import { chromium } from "playwright";
 
 const base = process.argv[2] ?? "http://127.0.0.1:8002";
 assert.match(base, /^http:\/\/(127\.0\.0\.1|localhost):\d+$/, "Local QA only");
+const { projects, activities = [] } = JSON.parse(
+    fs.readFileSync("database/seeders/data/portfolio.json", "utf8"),
+);
+const activityDetails = activities.flatMap(({ slug }) => [
+    `/activites/${slug.fr}`,
+    `/en/activities/${slug.en}`,
+]);
 const paths = [
     "/",
     "/en",
@@ -11,13 +18,20 @@ const paths = [
     "/en/projects",
     "/a-propos",
     "/en/about",
+    "/activites",
+    "/en/activities",
+    "/publications",
+    "/en/publications",
     "/contact",
     "/en/contact",
-    "/projets/projet-institutionnel",
-    "/en/projects/projet-institutionnel",
+    ...projects.flatMap(({ slug }) => [
+        `/projets/${slug}`,
+        `/en/projects/${slug}`,
+    ]),
+    ...activityDetails,
 ];
 const forbidden =
-    /PRIVATE-QA-|private-qa\.example\.test|fomin|redevance|mining royalty/i;
+    /PRIVATE-QA-|private-qa\.example\.test|fomin|redevance|mining royalt/i;
 const browser = await chromium.launch({
     headless: true,
     channel: process.env.PLAYWRIGHT_CHANNEL ?? "chrome",
@@ -73,10 +87,17 @@ try {
             privateMarkersAbsent: true,
         });
     }
+    for (const path of ["/sitemap.xml", "/robots.txt"]) {
+        const response = await context.request.get(base + path);
+        assert.equal(response.status(), 200, path);
+        assert.doesNotMatch(await response.text(), forbidden, path);
+    }
     for (const path of [
         "/storage/uploads/project/private-qa.txt",
         "/storage/images/projects/fomin/fomin-dashboard.png",
         "/images/projects/fomin/fomin-dashboard.png",
+        "/images/projects/%66omin/fomin-dashboard.png",
+        "/%73torage/images/projects/fomin/fomin-dashboard.png",
     ]) {
         assert.equal(
             (await context.request.get(base + path)).status(),
@@ -101,6 +122,7 @@ try {
                 "/en/projects/projet-institutionnel",
                 "/a-propos",
                 "/en/about",
+                ...activityDetails,
             ]) {
                 await page.goto(base + path, { waitUntil: "networkidle" });
                 await page.waitForTimeout(800);
@@ -157,7 +179,7 @@ try {
         JSON.stringify({ results, errors }, null, 2),
     );
     console.log(
-        `${paths.length} FR/EN SSR and Inertia checks, private media GET/HEAD and 16 browser views: OK`,
+        `${paths.length} FR/EN SSR and Inertia checks, private media GET/HEAD and ${results.length - paths.length} browser views: OK`,
     );
 } finally {
     await browser.close();

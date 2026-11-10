@@ -35,19 +35,32 @@ class PortfolioData
         return $settings;
     }
 
+    public function confidentialProjectCopy(Project $project, string $locale): array
+    {
+        if ($project->isInstitutional()) {
+            return __('confidential.institutional_project', [], $locale);
+        }
+
+        $description = __('portfolio.confidential_project_description', [], $locale);
+
+        return ['title' => __('portfolio.confidential_project_title', [], $locale), 'subtitle' => $description, 'description' => $description];
+    }
+
     public function project(Project $p): array
     {
         $empty = ['fr' => '', 'en' => ''];
 
-        if ($p->confidential) {
-            $title = $description = [];
+        if ($p->hasConfidentialDetails()) {
+            $title = $subtitle = $description = [];
             foreach (['fr', 'en'] as $locale) {
-                $title[$locale] = __('portfolio.confidential_project_title', [], $locale);
-                $description[$locale] = __('portfolio.confidential_project_description', [], $locale);
+                $copy = $this->confidentialProjectCopy($p, $locale);
+                $title[$locale] = $copy['title'];
+                $subtitle[$locale] = $copy['subtitle'];
+                $description[$locale] = $copy['description'];
             }
 
             return ['id' => 'confidential-'.$p->id, 'slug' => $p->translated('slug'), 'slugs' => $p->slug,
-                'title' => $title, 'shortDescription' => $description, 'description' => $description,
+                'title' => $title, 'shortDescription' => $subtitle, 'description' => $description,
                 'context' => $empty, 'role' => null, 'html' => ['fr' => $this->markdown($description['fr']), 'en' => $this->markdown($description['en'])],
                 'featured' => $p->featured, 'confidential' => true, 'media' => [], 'links' => []];
         }
@@ -56,7 +69,7 @@ class PortfolioData
             'title' => $p->title, 'shortDescription' => $p->excerpt ?? $empty, 'description' => $p->description ?? $empty,
             'context' => $p->context ?? $empty, 'role' => $p->role, 'html' => ['fr' => $this->markdown($p->description['fr'] ?? ''), 'en' => $this->markdown($p->description['en'] ?? '')], 'featured' => $p->featured, 'confidential' => $p->confidential,
             'media' => $p->media->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt, 'width' => $m->width, 'height' => $m->height, 'kind' => 'screenshot'])->values()->all(),
-            'links' => $p->confidential ? [] : array_values(array_filter([
+            'links' => array_values(array_filter([
                 $p->external_url ? ['type' => 'official', 'url' => $p->external_url] : null,
             ]))];
     }
@@ -76,19 +89,21 @@ class PortfolioData
     private function experience(Experience $experience): array
     {
         $description = $experience->description;
-        if ($experience->hasConfidentialDetails()) {
+        $confidential = $experience->hasConfidentialDetails();
+        if ($confidential) {
             $description = [];
+            $approved = $experience->isTaprinella() ? Experience::approvedTaprinellaResponsibilities() : null;
             foreach (['fr', 'en'] as $locale) {
-                $description[$locale] = $experience->public_description[$locale] ?? __('portfolio.confidential_experience_description', [], $locale);
-                if (blank($description[$locale])) {
-                    $description[$locale] = __('portfolio.confidential_experience_description', [], $locale);
-                }
+                $publicDescription = $experience->public_description[$locale] ?? null;
+                $description[$locale] = filled($publicDescription) && ($approved === null || $publicDescription === $approved[$locale])
+                    ? $publicDescription
+                    : ($approved[$locale] ?? __('portfolio.confidential_experience_description', [], $locale));
             }
         }
 
         return ['organization' => $experience->organization, 'role' => $experience->role, 'period' => $experience->period,
             'current' => $experience->current, 'description' => $description,
-            'contributions' => $experience->hasConfidentialDetails() ? [] : ($experience->contributions ?? [])];
+            'contributions' => $confidential ? [] : ($experience->contributions ?? [])];
     }
 
     public function publication(Publication $p): array
@@ -101,12 +116,17 @@ class PortfolioData
     public function activity(Activity $a): array
     {
         return ['id' => (string) $a->id, 'slug' => $a->translated('slug'), 'slugs' => $a->slug, 'title' => $a->title,
-            'description' => $a->summary, 'body' => $a->description, 'type' => in_array(mb_strtolower(trim($a->type)), ['formation', 'training'], true)
+            'description' => ['fr' => $this->activitySummary($a, 'fr'), 'en' => $this->activitySummary($a, 'en')], 'body' => $a->description, 'type' => in_array(mb_strtolower(trim($a->type)), ['formation', 'training'], true)
                 ? ['fr' => __('portfolio.activity_type_training', [], 'fr'), 'en' => __('portfolio.activity_type_training', [], 'en')]
                 : ['fr' => $a->type, 'en' => $a->type], 'role' => $a->role, 'location' => $a->location,
             'html' => ['fr' => $this->markdown($a->description['fr'] ?? ''), 'en' => $this->markdown($a->description['en'] ?? '')],
             'date' => $a->event_date?->toDateString(), 'externalUrl' => $a->external_url, 'status' => $a->status,
             'media' => $a->media->map(fn ($m) => ['src' => Storage::url($m->path), 'alt' => $m->alt])->all()];
+    }
+
+    public function activitySummary(Activity $activity, string $locale): string
+    {
+        return Str::squish(html_entity_decode(strip_tags($this->markdown($activity->translated('summary', $locale))), ENT_QUOTES | ENT_HTML5, 'UTF-8'));
     }
 
     public function markdown(string $body): string
