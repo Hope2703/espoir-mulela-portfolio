@@ -66,8 +66,23 @@ class PortfolioTest extends TestCase
             $this->get($url)->assertOk()->assertInertia(fn (Assert $p) => $p->where('locale', $locale)->where('portfolio.name', 'Espoir Mulela Mastolo'));
         }
         $this->assertDatabaseCount('projects', 9);
-        $this->assertDatabaseCount('activities', 0);
+        $this->assertDatabaseCount('activities', 1);
         $this->assertDatabaseCount('publications', 0);
+    }
+
+    public function test_public_image_responses_have_the_binary_file_headers(): void
+    {
+        $path = 'images/projects/culinapos/public-preview.jpg';
+        $size = (string) filesize(public_path($path));
+
+        foreach (['/'.$path, '/storage/'.$path] as $url) {
+            foreach (['GET', 'HEAD'] as $method) {
+                $this->call($method, $url)->assertOk()
+                    ->assertHeader('Content-Type', 'image/jpeg')
+                    ->assertHeader('Content-Length', $size)
+                    ->assertHeader('X-Content-Type-Options', 'nosniff');
+            }
+        }
     }
 
     public function test_every_real_project_in_both_languages_and_content_parity(): void
@@ -84,7 +99,7 @@ class PortfolioTest extends TestCase
         $this->assertDatabaseCount('experiences', 4);
         $this->assertDatabaseCount('education', 3);
         $this->assertDatabaseCount('certifications', 2);
-        $this->assertDatabaseCount('project_media', 14);
+        $this->assertDatabaseCount('project_media', 13);
     }
 
     public function test_locale_switch_resolves_translated_slug(): void
@@ -246,11 +261,13 @@ class PortfolioTest extends TestCase
 
     public function test_activity_description_renders_safe_markdown_in_both_languages_and_preserves_source(): void
     {
+        $summary = ['fr' => '**Python** & [ETL](https://example.test)', 'en' => "## Current work\n\n**Python** & [ETL](https://example.test)"];
+        $plainSummary = ['fr' => 'Python & ETL', 'en' => 'Current work Python & ETL'];
         $description = [];
         foreach (['fr' => 'Solutions', 'en' => 'Solutions EN'] as $locale => $title) {
             $description[$locale] = "## {$title}\n\nPremier paragraphe.\n\nDeuxième paragraphe avec `code`.\n\n### Détails\n\n- Python\n- Machine Learning\n\n[Lien](https://example.com)\n\n[Dangereux](javascript:alert(1))\n\n<span onclick=\"alert(1)\">HTML brut</span>\n\n<script>alert(1)</script>";
         }
-        $activity = Activity::create(array_replace($this->payload('activities'), ['description' => $description, 'status' => 'published', 'published_at' => now()->subDay()]));
+        $activity = Activity::create(array_replace($this->payload('activities'), ['summary' => $summary, 'description' => $description, 'status' => 'published', 'published_at' => now()->subDay()]));
         foreach (['fr' => '/activites/test-fr', 'en' => '/en/activities/test-en'] as $locale => $url) {
             $html = app(PortfolioData::class)->activity($activity)['html'][$locale];
             foreach (['<h2>', '<h3>', '<ul>', '<li>Python</li>', '<li>Machine Learning</li>', '<p>Premier paragraphe.</p>', '<p>Deuxième paragraphe', '<code>code</code>', 'href="https://example.com"'] as $fragment) {
@@ -259,8 +276,10 @@ class PortfolioTest extends TestCase
             foreach (['<script', '<span', 'onclick=', 'javascript:'] as $fragment) {
                 $this->assertStringNotContainsString($fragment, $html);
             }
-            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->where('locale', $locale)->where('activity.html.'.$locale, $html));
+            $this->get($url)->assertOk()->assertInertia(fn (Assert $page) => $page->where('locale', $locale)->where('activity.html.'.$locale, $html)
+                ->where('activity.description.'.$locale, $plainSummary[$locale])->where('meta.description', $plainSummary[$locale]));
         }
+        $this->assertEquals($summary, $activity->fresh()->summary);
         $storedDescription = $activity->fresh()->description;
         foreach (['fr', 'en'] as $locale) {
             $this->assertSame($description[$locale], $storedDescription[$locale]);

@@ -40,10 +40,9 @@ export function Home({ locale }: { locale: Locale }) {
                             </h1>
                         </div>
                         <p className="hero-fields">
-                            Web · Mobile · {t("features_profile_home_05")}
+                            {t("features_profile_home_05")}
                             <br />
-                            {t("features_profile_home_06")} ·{" "}
-                            {t("features_profile_home_07")}
+                            {t("features_profile_home_06")}
                         </p>
                     </div>
                     <div className="hero-portrait">

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Activity;
 use App\Models\Project;
 
 class PageMeta
@@ -9,9 +10,10 @@ class PageMeta
     public function make(string $key, $content = null, bool $preview = false): array
     {
         $locale = app()->getLocale();
-        $profile = app(PortfolioData::class)->profile();
-        $confidential = $content instanceof Project && $content->confidential;
-        $contentTitle = $confidential ? __('portfolio.confidential_project_title') : $content?->translated('title');
+        $portfolio = app(PortfolioData::class);
+        $profile = $portfolio->profile();
+        $confidentialCopy = $content instanceof Project && $content->hasConfidentialDetails() ? $portfolio->confidentialProjectCopy($content, $locale) : null;
+        $contentTitle = $confidentialCopy['title'] ?? $content?->translated('title');
         $base = rtrim(config('app.url'), '/');
         $segments = ['home' => ['', ''], 'projects' => ['projets', 'projects'], 'about' => ['a-propos', 'about'], 'activities' => ['activites', 'activities'], 'publications' => ['publications', 'publications'], 'contact' => ['contact', 'contact']];
         $paths = [];
@@ -21,9 +23,14 @@ class PageMeta
             }
             $paths[$l] = ($l === 'en' ? '/en' : '').($key === 'home' ? ($l === 'fr' ? '/' : '') : '/'.$segments[$key][$l === 'fr' ? 0 : 1]).($content ? '/'.$content->translated('slug', $l) : '');
         }
-        $title = $content ? ($confidential ? $contentTitle : ($content->translated('seo_title') ?: $contentTitle)) : ($key === 'home' ? ($profile['seo_title'][$locale] ?? __('ui.title')) : __('ui.nav.'.$key));
+        $title = $content ? ($confidentialCopy['title'] ?? ($content->translated('seo_title') ?: $contentTitle)) : ($key === 'home' ? ($profile['seo_title'][$locale] ?? __('ui.title')) : __('ui.nav.'.$key));
         $title = $key === 'home' ? ($profile['name'] ?? 'Espoir Mulela Mastolo').' — '.$title : $title.' — '.($profile['name'] ?? 'Espoir Mulela Mastolo');
-        $description = $content ? ($confidential ? __('portfolio.confidential_project_description') : ($content->translated('seo_description') ?: $content->translated($key === 'activities' ? 'summary' : 'excerpt'))) : ($profile['seo_description'][$locale] ?? '');
+        $description = match (true) {
+            $confidentialCopy !== null => $confidentialCopy['description'],
+            $content instanceof Activity => $portfolio->activitySummary($content, $locale),
+            $content !== null => $content->translated('seo_description') ?: $content->translated('excerpt'),
+            default => $profile['seo_description'][$locale] ?? '',
+        };
         $canonical = $base.($paths[$locale] ?? '/');
         $alternates = array_map(fn ($path) => $base.$path, $paths);
         $breadcrumbs = [['@type' => 'ListItem', 'position' => 1, 'name' => __('ui.nav.home'), 'item' => $base.($locale === 'fr' ? '/' : '/en')]];

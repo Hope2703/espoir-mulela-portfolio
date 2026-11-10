@@ -15,6 +15,18 @@ class ContentRequest extends FormRequest
         return (bool) $this->user()?->is_admin;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->route()->defaults['content_type'] !== 'projects') {
+            return;
+        }
+
+        $existing = $this->route('id') ? Project::find($this->route('id')) : null;
+        if ($existing?->isInstitutional() || in_array(Project::INSTITUTIONAL_SLUG, (array) $this->input('slug'), true)) {
+            $this->merge(['confidential' => true]);
+        }
+    }
+
     public function rules(): array
     {
         $type = $this->route()->defaults['content_type'];

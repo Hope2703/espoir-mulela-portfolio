@@ -92,13 +92,18 @@ class RecordController extends Controller
 
     private function editor(Request $r, $item = null)
     {
+        $lockedFields = [];
         if ($item instanceof Experience) {
             $props = $item->toArray();
             $props['confidential'] = $item->hasConfidentialDetails();
+            if ($item->isTaprinella()) {
+                $lockedFields = ['organization', 'confidential', 'public_description'];
+                $props['public_description'] = Experience::approvedTaprinellaResponsibilities();
+            }
             $item = $props;
         }
 
-        return Inertia::render('admin/record-edit', ['module' => $this->module($r), 'fields' => $this->fields($r), 'item' => $item, 'categories' => SkillCategory::orderBy('sort_order')->get(['id', 'title'])]);
+        return Inertia::render('admin/record-edit', ['module' => $this->module($r), 'fields' => $this->fields($r), 'item' => $item, 'lockedFields' => $lockedFields, 'categories' => SkillCategory::orderBy('sort_order')->get(['id', 'title'])]);
     }
 
     public function store(Request $r)
@@ -114,9 +119,6 @@ class RecordController extends Controller
     private function save(Request $r, ?int $id = null)
     {
         $data = $r->validate($this->rules($r));
-        if ($this->module($r) === 'experiences' && collect($data['public_description'] ?? [])->contains(fn ($value) => filled($value))) {
-            $r->validate(['public_description.fr' => 'required|string|max:20000', 'public_description.en' => 'required|string|max:20000']);
-        }
         if ($this->module($r) === 'social-links') {
             $url = $data['url'] ?? '';
             $platform = $data['platform'];
@@ -131,7 +133,18 @@ class RecordController extends Controller
 
         $model = $this->model($r);
         $item = $id ? $model::findOrFail($id) : new $model;
-        $item->fill($data)->save();
+        if ($item instanceof Experience && $item->isTaprinella()) {
+            unset($data['organization']);
+        }
+        $item->fill($data);
+        if ($item instanceof Experience) {
+            if ($item->isTaprinella()) {
+                $item->fill(['confidential' => true, 'public_description' => Experience::approvedTaprinellaResponsibilities()]);
+            } elseif (collect($data['public_description'] ?? [])->contains(fn ($value) => filled($value))) {
+                $r->validate(['public_description.fr' => 'required|string|max:20000', 'public_description.en' => 'required|string|max:20000']);
+            }
+        }
+        $item->save();
         if ($item instanceof SocialLink && $item->enabled) {
             if ($item->platform === 'Email') {
                 SiteSetting::updateOrCreate(['key' => 'email'], ['value' => substr($item->url, 7)]);

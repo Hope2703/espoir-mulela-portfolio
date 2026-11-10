@@ -6,6 +6,7 @@ out/
 .env*
 !.env.example
 artifacts/
+/database/*.sqlite*
 coverage/
 *.log
 .DS_Store

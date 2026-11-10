@@ -63,6 +63,7 @@ export function Field({
     area = false,
     type = "text",
     required = false,
+    readOnly = false,
     autoComplete,
 }: {
     name: string;
@@ -73,6 +74,7 @@ export function Field({
     area?: boolean;
     type?: string;
     required?: boolean;
+    readOnly?: boolean;
     autoComplete?: string;
 }) {
     const a = useAdminTranslation();
@@ -88,6 +90,7 @@ export function Field({
         "aria-invalid": !!error,
         "aria-describedby": error ? name + "-error" : undefined,
         required,
+        readOnly,
     };
     return (
         <div className="form-field">

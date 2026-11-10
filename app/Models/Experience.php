@@ -18,8 +18,19 @@ class Experience extends Model
 
     public function hasConfidentialDetails(): bool
     {
-        // Protect the existing institutional experience until its flag is reviewed.
-        // An explicit admin choice takes precedence; no stored content is rewritten.
-        return $this->confidential ?? in_array(mb_strtolower(trim($this->organization ?? '')), config('portfolio.confidential_experience_organizations'), true);
+        return $this->isTaprinella() || (bool) $this->confidential;
+    }
+
+    public function isTaprinella(): bool
+    {
+        return in_array(mb_strtolower(trim($this->organization ?? '')), config('portfolio.taprinella_experience_organizations'), true);
+    }
+
+    public static function approvedTaprinellaResponsibilities(): array
+    {
+        return [
+            'fr' => __('confidential.taprinella_public_description', [], 'fr'),
+            'en' => __('confidential.taprinella_public_description', [], 'en'),
+        ];
     }
 }

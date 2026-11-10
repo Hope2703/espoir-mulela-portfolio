@@ -6,47 +6,51 @@ import https from "node:https";
 function fetch(url, options = {}) {
     return new Promise((resolve, reject) => {
         const transport = url.startsWith("https:") ? https : http;
-        const request = transport.get(url, { agent: false }, (response) => {
-            const chunks = [];
-            response.on("data", (chunk) => chunks.push(chunk));
-            response.on("error", reject);
-            response.on("end", () => {
-                if (
-                    response.statusCode >= 300 &&
-                    response.statusCode < 400 &&
-                    response.headers.location &&
-                    options.redirect !== "manual"
-                ) {
-                    resolve(
-                        fetch(
-                            new URL(response.headers.location, url).href,
-                            options,
-                        ),
-                    );
-                    return;
-                }
-                resolve({
-                    status: response.statusCode,
-                    ok: response.statusCode >= 200 && response.statusCode < 300,
-                    headers: {
-                        get: (key) => response.headers[key.toLowerCase()],
-                    },
-                    text: async () => Buffer.concat(chunks).toString("utf8"),
+        const request = transport.request(
+            url,
+            { agent: false, method: options.method ?? "GET" },
+            (response) => {
+                const chunks = [];
+                response.on("data", (chunk) => chunks.push(chunk));
+                response.on("error", reject);
+                response.on("end", () => {
+                    if (
+                        response.statusCode >= 300 &&
+                        response.statusCode < 400 &&
+                        response.headers.location &&
+                        options.redirect !== "manual"
+                    ) {
+                        resolve(
+                            fetch(
+                                new URL(response.headers.location, url).href,
+                                options,
+                            ),
+                        );
+                        return;
+                    }
+                    resolve({
+                        status: response.statusCode,
+                        headers: {
+                            get: (key) => response.headers[key.toLowerCase()],
+                        },
+                        text: async () =>
+                            Buffer.concat(chunks).toString("utf8"),
+                    });
                 });
-            });
-        });
+            },
+        );
         request.on("error", reject);
         request.setTimeout(30000, () =>
             request.destroy(new Error("HTTP check timeout: " + url)),
         );
+        request.end();
     });
 }
 const base = process.argv[2] ?? "http://127.0.0.1:8000";
 
-const projects = JSON.parse(
+const { projects, activities = [] } = JSON.parse(
     fs.readFileSync("database/seeders/data/portfolio.json", "utf8"),
-).projects;
-const expectedPages = 12 + projects.length * 2;
+);
 const routes = [
     "/",
     "/en",
@@ -64,7 +68,12 @@ const routes = [
         "/projets/" + p.slug,
         "/en/projects/" + p.slug,
     ]),
+    ...activities.flatMap(({ slug }) => [
+        "/activites/" + slug.fr,
+        "/en/activities/" + slug.en,
+    ]),
 ];
+const expectedPages = routes.length;
 const results = [];
 for (const path of routes) {
     const response = await fetch(base + path);
@@ -114,15 +123,22 @@ assert.equal((sitemap.match(/<loc>/g) ?? []).length, expectedPages);
 assert.ok(!sitemap.includes("/admin"));
 for (const project of projects)
     for (const image of project.media) {
-        const response = await fetch(base + "/storage" + image.src);
-        if (project.confidential) {
-            assert.equal(
-                response.status,
-                404,
-                "Confidential media must remain private",
-            );
-            assert.equal((await fetch(base + image.src)).status, 404);
-        } else assert.ok(response.ok, image.src);
+        for (const path of [image.src, "/storage" + image.src]) {
+            for (const method of ["GET", "HEAD"]) {
+                const response = await fetch(base + path, { method });
+                assert.equal(
+                    response.status,
+                    project.confidential ? 404 : 200,
+                    `${method} ${path}`,
+                );
+                if (!project.confidential)
+                    assert.match(
+                        response.headers.get("content-type") ?? "",
+                        /^image\//i,
+                        `${method} ${path} MIME`,
+                    );
+            }
+        }
     }
 fs.mkdirSync("artifacts", { recursive: true });
 fs.writeFileSync(

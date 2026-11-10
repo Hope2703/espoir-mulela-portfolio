@@ -1121,15 +1121,25 @@ p + p {
     border: 1px solid var(--border);
     margin-top: 18px;
 }
-.certifications {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 50px;
+.profile-credentials {
     border-top: 1px solid var(--border);
-    padding-top: 40px;
+    padding-top: 35px;
     margin-top: 35px;
 }
-.certifications h3 {
+.profile-credentials h3 {
+    font-size: 29px;
+    margin-bottom: 20px;
+}
+.profile-languages,
+.certifications {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px 50px;
+}
+.profile-languages dt {
+    font-weight: 650;
+}
+.certifications h4 {
     margin: 15px 0;
     font-size: 24px;
 }
@@ -2045,9 +2055,9 @@ p + p {
     .education-list h3 {
         font-size: 26px;
     }
+    .profile-languages,
     .certifications {
         grid-template-columns: 1fr;
-        gap: 35px;
     }
     .skill-list article {
         display: block;
